@@ -102,7 +102,8 @@ cmake ..
 cmake --build ./
 ```
 
-To build these programs with `make`, run the `make` command from the `/examples`.
+To build these programs with `make`, run the `make` command from the `/examples`
+directory.
 
 The compiled programs should now be in the `/examples/bin/` directory.
 
