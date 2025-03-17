@@ -36,11 +36,13 @@ Note: Define the all STD_DDS defines before #include "std_dds.h"
 /* 
 Define STD_DDS_ERROR_MSG to print error messages to stderr output
 Define STD_DDS_WARNING_MSG to print warning messages to stdout output
+Note: STD_DDS_WARNING_MSG automatically defines STD_DDS_ERROR_MSG
 
 E.g.
-    #define STD_DDS_ERROR_MSG
     #define STD_DDS_WARNING_MSG
+    // Both error and warning messages are now enabled
 */
+
 
 /*
 Define STD_DDS_INDIVIDUAL_DEFINE to individually include each data structure,
@@ -59,6 +61,9 @@ E.g.
     #include <stdio.h>
 #endif
 
+#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
+    #define STD_DDS_ERROR_MSG
+#endif
 
 #ifndef STD_DDS_INDIVIDUAL_DEFINE
     #define STD_DDS_ARRAY_LIST
@@ -417,13 +422,15 @@ void ArrayListResize(ArrayList *list, unsigned int capacity){
         return;
     }
 
-    list->values = (void **)realloc(list->values, sizeof(void *) * capacity);
-    if(list->values == NULL){
+    void **values = (void **)realloc(list->values, sizeof(void *) * capacity);
+    if(values == NULL){
         #ifdef STD_DDS_ERROR_MSG
             fprintf(stderr, "[Error] ArrayList values realloc failed. Unable to reallocate memory of %zu bytes. Exiting.\n", sizeof(void *) * capacity);
         #endif
         exit(1);
     }
+
+    list->values = values;
 
     list->capacity = capacity;
 
@@ -468,7 +475,7 @@ void ArrayListPush(ArrayList *list, void *value){
         ArrayListResize(list, list->capacity * 2);
     }
 
-    for(int i = list->length - 1; i >= 0; i--){
+    for(unsigned int i = list->length - 1; i >= 0; i--){
         list->values[i + 1] = list->values[i];
     }
 
@@ -557,7 +564,7 @@ void *ArrayListRemoveAt(ArrayList *list, unsigned int index){
 
     void *value = list->values[index];
 
-    for(int i = index; i < list->length - 1; i++){
+    for(unsigned int i = index; i < list->length - 1; i++){
         list->values[index] = list->values[index + 1];
     }
 
