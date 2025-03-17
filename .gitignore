@@ -2,6 +2,8 @@
 *.exe
 *.pdb
 
+.DS_Store
+
 /examples/bin
 /examples/build
 
