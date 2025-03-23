@@ -1,30 +1,26 @@
-/* std_dds.h - Standard Dynamic Data Structures
+/* std_dds - Standard Dynamic Data Structures
  * Copyright (C) 2025 Jasper Devir <jasperdevir.jd@gmail.com>
  *
- * std_dds.h is free software: you can redistribute it and/or modify
+ * std_dds is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
- * std_dds.h is distributed in the hope that it will be useful,
+ * std_dds is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with std_dds.h.  If not, see <https://www.gnu.org/licenses/>.
+ * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define STD_DDS_INDIVIDUAL_DEFINE
-#define STD_DDS_LINKED_LIST
-#define STD_DDS_STACK
-#define STD_DDS_IMPLEMENTATION
-#include "std_dds.h"
+#include "stack.h"
 
 #include <stdio.h>
 
 int main(void){
-    printf("\n== std_dds.h Stack Example ==\n");
+    printf("\n== std_dds Stack Example ==\n");
 
     printf("\n-- StackInit() --\n");
     printf("Initialising a Stack.\n");

@@ -1,5 +1,5 @@
 # std_dds.h
-std_dds.h _(Standard Dynamic Data Structures)_ is a single file C Library that
+std_dds.h _(Standard Dynamic Data Structures)_ is a simple C Library that
 implements of a range of basic dynamic data structures in C.
 
 ### Data Structures Included:
@@ -55,7 +55,6 @@ during debugging. To enable them define `STD_DDS_ERROR_MSG` and/or
 ```c
 #define STD_DDS_ERROR_MSG
 #define STD_DDS_WARNING_MSG
-#define STD_DDS_IMPLEMENTATION
 #include "std_dds.h"
 ...
 
@@ -66,63 +65,20 @@ LinkedListAppend(NULL, NULL);
 **/
 ```
 
-### Individual Definitions
-
-You can also individually include specific data structures, as they are all
-included and defined by default. To do this first define 
-`STD_DDS_INDIVIDUAL_DEFINE` and then define any specific data structure you 
-want to include.
-_Note: Some data structures require others to be included 
-(e.g. `STD_DDS_STACK` requires `STD_DDS_LINKED_LIST` to be defined)_
-```c
-#define STD_DDS_INDIVIDUAL_DEFINE
-#define STD_DDS_LINKED_LINK
-#define STD_DDS_STACK
-#define STD_DDS_IMPLEMENTATION
-#include "std_dds.h"
-// Only LinkedList and Stack have now been included and defined in the project
-...
-
-Queue *queue = InitQueue();
-// This will now result in a compiler error as it is undefined
-```
-
 ## Examples
 
 The `/examples` directory contains an example program for each data structure,
 utilising each one of its associated functions.
 
-To build these programs with `cmake` run these commands from the root directory:
-
-```
-cd examples
-mkdir build
-cd build
-cmake ..
-cmake --build ./
-```
-
-To build these programs with `make`, run the `make` command from the `/examples`
+To build these programs with `make`, run the `make` command from the root
 directory.
 
-The compiled programs should now be in the `/examples/bin/` directory.
+The compiled example programs should now be in the `/bin/` directory.
 
 ## Macros
 
-- `STD_DDS_IMPLEMENTATION`
 - `STD_DDS_ERROR_MSG`
 - `STD_DDS_WARNING_MSG`
-- `STD_DDS_INDIVIDUAL_DEFINE`
-
-### Data Structures:
-
-- `STD_DDS_ARRAY_LIST`
-- `STD_DDS_LINKED_LIST`
-- `STD_DDS_DLINKED_LIST`
-- `STD_DDS_STACK`
-    - Requires `STD_DDS_LINKED_LIST`
-- `STD_DDS_QUEUE`
-    - Requires `STD_DDS_DLINKED_LIST`
 
 ## References
 
