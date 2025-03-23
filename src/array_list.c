@@ -101,7 +101,7 @@ void ArrayListPush(ArrayList *list, void *value){
         ArrayListResize(list, list->capacity * 2);
     }
 
-    for(unsigned int i = list->length - 1; i >= 0; i--){
+    for (int i = list->length - 1; i >= 0; i--) {
         list->values[i + 1] = list->values[i];
     }
 

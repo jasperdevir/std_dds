@@ -4,6 +4,7 @@
 
 .DS_Store
 
-/examples/bin
-/examples/build
+/bin
+/obj
+/.vscode
 

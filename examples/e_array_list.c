@@ -15,6 +15,7 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#define STD_DDS_WARNING_MSG
 #include "array_list.h"
 
 #include <stdio.h>
