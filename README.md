@@ -1,5 +1,5 @@
-# std_dds.h
-std_dds.h _(Standard Dynamic Data Structures)_ is a simple C Library that
+# std_dds
+std_dds _(Standard Dynamic Data Structures)_ is a simple C Library that
 implements of a range of basic dynamic data structures in C.
 
 ### Data Structures Included:
@@ -24,28 +24,18 @@ implements of a range of basic dynamic data structures in C.
 
 ## Usage
 
-Simply just include the `std_dds.h` header file:
+Include the `std_dds.h` header file to have access to all the data stuctures:
 ```c
 #include "std_dds.h"
 ```
 
-In **ONE** `.c` file define `STD_DDS_IMPLEMENTATION`:
+Otherwise, include individual header files for specific data structures:
 ```c
-#define STD_DDS_IMPLEMENTATION
-#include "std_dds.h"
+#include "array_list.h"
+#include "stack.h"
 ```
-
-Then you have access to all the data structures and their functions:
-```c
-ArrayList *list = ArrayListInit(5);
-int a = 1;
-ArrayListAppend(list, &a);
-
-int b = 0;
-ArrayListPush(list, &b);
-
-// The list now contains the values [0, 1, _, _, _]
-```
+Include all needed `.h` files in your project's `/include` directory, as well as
+their coresponding `.c` files in your `/src` directory.
 
 ### Error and Warning Messages
 
