@@ -50,7 +50,7 @@ int main(void){
 
     printf("\n-- StackPop() --\n");
 
-    while(stack->length > 0){
+    while(StackGetLength(stack) > 0){
         printf("Popping top element from Stack.\n");
         void *value = StackPop(stack);
         if(value != NULL){

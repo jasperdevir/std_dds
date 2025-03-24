@@ -17,6 +17,12 @@
 
 #include "array_list.h"
 
+typedef struct arrayList {
+    void **values;
+    unsigned int capacity;
+    unsigned int length;
+} ArrayList;
+
 ArrayList *ArrayListInit(unsigned int capacity){
     ArrayList *list = (ArrayList *)malloc(sizeof(ArrayList));
     if(list == NULL){
@@ -197,6 +203,28 @@ void *ArrayListRemoveAt(ArrayList *list, unsigned int index){
     list->length--;
 
     return value;
+}
+
+unsigned int ArrayListGetLength(ArrayList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] ArrayListGetLength failed. ArrayList value is NULL. Returning 0.\n");
+        #endif
+        return 0;
+    }
+
+    return list->length;
+}
+
+unsigned int ArrayListGetCapacity(ArrayList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] ArrayListGetCapacity failed. ArrayList value is NULL. Returning 0.\n");
+        #endif
+        return 0;
+    }
+
+    return list->capacity;
 }
 
 void ArrayListFree(ArrayList *list){

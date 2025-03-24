@@ -24,11 +24,7 @@
     #include <stdio.h>
 #endif
 
-typedef struct {
-    void **values;
-    unsigned int capacity;
-    unsigned int length;
-} ArrayList;
+typedef struct arrayList ArrayList;
 
 /**
 * Initialise and allocate memory for an ArrayList object with an initial array capacity.
@@ -93,6 +89,10 @@ void *ArrayListPop(ArrayList *list);
 * Returns NULL if the list is empty or if the index is out-of-bounds
 **/
 void *ArrayListRemoveAt(ArrayList *list, unsigned int index);
+
+unsigned int ArrayListGetLength(ArrayList *list);
+
+unsigned int ArrayListGetCapacity(ArrayList *list);
 
 /**
 * Free the memory allocated for an ArrayList object and its array.

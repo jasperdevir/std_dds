@@ -13,99 +13,146 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "queue.h"
 
-Queue *QueueInit(){
-    Queue *queue = (Queue *)malloc(sizeof(Queue));
-    if(queue == NULL){
-        #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "Queue malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(Queue));
-        #endif
-        exit(1);
-    }
+typedef struct queue {
+  DLinkedNode *head;
+  DLinkedNode *tail;
+  int length;
+} Queue;
 
-    queue->head = NULL;
+Queue *QueueInit() {
+  Queue *queue = (Queue *)malloc(sizeof(Queue));
+  if (queue == NULL) {
+#ifdef STD_DDS_ERROR_MSG
+    fprintf(stderr,
+            "Queue malloc failed. Unable to allocate memory of %zu bytes. "
+            "Exiting.\n",
+            sizeof(Queue));
+#endif
+    exit(1);
+  }
+
+  queue->head = NULL;
+  queue->tail = NULL;
+  queue->length = 0;
+
+  return queue;
+}
+
+void QueueEnqueue(Queue *queue, void *value) {
+  if (queue == NULL) {
+#ifdef STD_DDS_WARNING_MSG
+    fprintf(stdout, "[Warning] QueueEnqueue failed. Queue value is NULL.\n");
+#endif
+    return;
+  }
+
+  DLinkedNode *node = DLinkedNodeInit(value);
+
+  if (queue->tail != NULL) {
+    queue->tail->prev = node;
+    node->next = queue->tail;
+  }
+
+  queue->tail = node;
+
+  if (queue->head == NULL) {
+    queue->head = queue->tail;
+  }
+
+  queue->length++;
+}
+
+void *QueueDequeue(Queue *queue) {
+  if (queue == NULL) {
+#ifdef STD_DDS_WARNING_MSG
+    fprintf(stdout, "[Warning] QueueDequeue failed. Queue value is NULL. "
+                    "Returning NULL.\n");
+#endif
+    return NULL;
+  }
+
+  DLinkedNode *currHead = queue->head;
+
+  if (currHead == NULL || queue->length < 1) {
+    return NULL;
+  }
+
+  DLinkedNode *newHead = currHead->prev;
+
+  if (newHead != NULL) {
+    newHead->next = NULL;
+  }
+
+  queue->head = newHead;
+
+  if (queue->head == NULL) {
     queue->tail = NULL;
-    queue->length = 0;
+  }
 
-    return queue;
+  queue->length--;
+
+  void *value = currHead->value;
+
+  free(currHead);
+
+  return value;
 }
 
-void QueueEnqueue(Queue *queue, void *value){
-    if(queue == NULL){
-        #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] QueueEnqueue failed. Queue value is NULL.\n");
-        #endif
-        return;
-    }
+unsigned int QueueGetLength(Queue *queue) {
+  if (queue == NULL) {
+#ifdef STD_DDS_WARNING_MSG
+    fprintf(
+        stdout,
+        "[Warning] QueueGetLength failed. Queue value is NULL. Returning 0.\n");
+#endif
+    return 0;
+  }
 
-    DLinkedNode *node = DLinkedNodeInit(value);
-
-    if(queue->tail != NULL){
-        queue->tail->prev = node;
-        node->next = queue->tail;
-    }
-
-    queue->tail = node;
-
-    if(queue->head == NULL){
-        queue->head = queue->tail;
-    }
-
-    queue->length++;
+  return queue->length;
 }
 
-void *QueueDequeue(Queue *queue){
-    if(queue == NULL){
-        #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] QueueDequeue failed. Queue value is NULL. Returning NULL.\n");
-        #endif
-        return NULL;
-    }
+DLinkedNode *QueueGetHead(Queue *queue) {
+  if (queue == NULL) {
+#ifdef STD_DDS_WARNING_MSG
+    fprintf(stdout, "[Warning] QueueGetHead failed. Queue value is NULL. "
+                    "Returning NULL.\n");
+#endif
+    return NULL;
+  }
 
-    DLinkedNode *currHead = queue->head;
-
-    if(currHead == NULL || queue->length < 1){
-        return NULL;
-    }
-
-    DLinkedNode *newHead = currHead->prev;
-
-    if(newHead != NULL){
-        newHead->next = NULL;
-    }
-
-    queue->head = newHead;
-
-    if(queue->head == NULL){
-        queue->tail = NULL;
-    }
-
-    queue->length--;
-
-    void *value = currHead->value;
-
-    free(currHead);
-
-    return value;
+  return queue->head;
 }
 
-void QueueFree(Queue *queue){
-    if(queue == NULL){
-        #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] QueueFree failed. Queue value is NULL.\n");
-        #endif
-        return;
-    }
+DLinkedNode *QueueGetTail(Queue *queue) {
+  if (queue == NULL) {
+#ifdef STD_DDS_WARNING_MSG
+    fprintf(stdout, "[Warning] QueueGetTail failed. Queue value is NULL. "
+                    "Returning NULL.\n");
+#endif
+    return NULL;
+  }
 
-    DLinkedNode *node = queue->head;
-    while(node != NULL){
-        DLinkedNode *next = node->next;
-        free(node);
-        node = next;
-    }
+  return queue->tail;
+}
 
-    free(queue);
+void QueueFree(Queue *queue) {
+  if (queue == NULL) {
+#ifdef STD_DDS_WARNING_MSG
+    fprintf(stdout, "[Warning] QueueFree failed. Queue value is NULL.\n");
+#endif
+    return;
+  }
+
+  DLinkedNode *node = queue->head;
+  while (node != NULL) {
+    DLinkedNode *next = node->next;
+    free(node);
+    node = next;
+  }
+
+  free(queue);
 }

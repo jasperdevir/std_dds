@@ -17,6 +17,12 @@
 
 #include "linked_list.h"
 
+typedef struct linkedList {
+    LinkedNode *head;
+    LinkedNode *tail;
+    unsigned int length;
+} LinkedList;
+
 LinkedNode *LinkedNodeInit(void *value){
     LinkedNode *node = (LinkedNode *)malloc(sizeof(LinkedNode));
     if(node == NULL){
@@ -166,6 +172,39 @@ void *LinkedListPopTail(LinkedList *list){
 
     return value;
 
+}
+
+unsigned int LinkedListGetLength(LinkedList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] LinkedListGetLength failed. LinkedList value is NULL. Returning 0.\n");
+        #endif
+        return 0;
+    }
+
+    return list->length;
+}
+
+LinkedNode *LinkedListGetHead(LinkedList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] LinkedListGetHead failed. LinkedList value is NULL. Returning NULL.\n");
+        #endif
+        return NULL;
+    }
+
+    return list->head;
+}
+
+LinkedNode *LinkedListGetTail(LinkedList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] LinkedListGetTail failed. LinkedList value is NULL. Returning NULL.\n");
+        #endif
+        return NULL;
+    }
+
+    return list->tail;
 }
 
 void LinkedListFree(LinkedList *list){

@@ -30,11 +30,7 @@ typedef struct dlinkedNode{
     struct dlinkedNode *next;
 } DLinkedNode;
 
-typedef struct {
-    DLinkedNode *head;
-    DLinkedNode *tail;
-    unsigned int length;
-} DLinkedList;
+typedef struct dLinkedList DLinkedList;
 
 /**
 * Initialise and allocate memory for a DLinkedNode object with a specified pointer value.
@@ -78,6 +74,12 @@ void *DLinkedListPop(DLinkedList *list);
 * Returns NULL if the list is empty.
 **/
 void *DLinkedListPopTail(DLinkedList *list);
+
+unsigned int DLinkedListGetLength(DLinkedList *list);
+
+DLinkedNode *DLinkedListGetHead(DLinkedList *list);
+
+DLinkedNode *DLinkedListGetTail(DLinkedList *list);
 
 /**
 * Remove the tail node of a DLinkedList.

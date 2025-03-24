@@ -17,6 +17,12 @@
 
 #include "d_linked_list.h"
 
+typedef struct dLinkedList {
+    DLinkedNode *head;
+    DLinkedNode *tail;
+    unsigned int length;
+} DLinkedList;
+
 DLinkedNode *DLinkedNodeInit(void *value){
     DLinkedNode *node = (DLinkedNode *)malloc(sizeof(DLinkedNode));
     if(node == NULL){
@@ -168,6 +174,39 @@ void *DLinkedListPopTail(DLinkedList *list){
     free(currTail);
 
     return value;
+}
+
+unsigned int DLinkedListGetLength(DLinkedList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] DLinkedListGetLength failed. DLinkedList value is NULL. Returning 0.\n");
+        #endif
+        return 0;
+    }
+
+    return list->length;
+}
+
+DLinkedNode *DLinkedListGetHead(DLinkedList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] DLinkedListGetHead failed. DLinkedList value is NULL. Returning NULL.\n");
+        #endif
+        return NULL;
+    }
+
+    return list->head;
+}
+
+DLinkedNode *DLinkedListGetTail(DLinkedList *list){
+    if(list == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] DLinkedListGetTail failed. DLinkedList value is NULL. Returning NULL.\n");
+        #endif
+        return NULL;
+    }
+
+    return list->tail;
 }
 
 void DLinkedListFree(DLinkedList *list){

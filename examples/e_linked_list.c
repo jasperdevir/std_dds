@@ -21,9 +21,8 @@
 
 void PrintCharLinkedList(LinkedList *list){
     printf("Result: [");
-    LinkedNode *node = list->head;
-
-    for(node = list->head; node != NULL; node = node->next){
+    LinkedNode *node;
+    for(node = LinkedListGetHead(list); node != NULL; node = node->next){
         if(node->value != NULL){
             printf("%c", *(char *)node->value);
         }

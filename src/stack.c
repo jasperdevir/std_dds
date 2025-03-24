@@ -17,6 +17,11 @@
 
 #include "stack.h"
 
+typedef struct stack {
+    LinkedNode *head;
+    int length;
+} Stack;
+
 Stack *StackInit() {
     Stack *stack = (Stack *)malloc(sizeof(Stack));
     if (stack == NULL) {
@@ -75,6 +80,28 @@ Stack *StackInit() {
       return value;
   
   }
+
+unsigned int StackGetLength(Stack *stack){
+    if(stack == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] StackGetLength failed. Stack value is NULL. Returning 0.\n");
+        #endif
+        return 0;
+    }
+
+    return stack->length;
+}
+
+LinkedNode *StackGetHead(Stack *stack){
+    if(stack == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stdout, "[Warning] StackGetHead failed. Stack value is NULL. Returning NULL.\n");
+        #endif
+        return NULL;
+    }
+
+    return stack->head;
+}
   
   void StackFree(Stack *stack) {
       if(stack == NULL){

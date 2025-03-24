@@ -3,6 +3,7 @@
 *.pdb
 
 .DS_Store
+compile_flags.txt
 
 /bin
 /obj

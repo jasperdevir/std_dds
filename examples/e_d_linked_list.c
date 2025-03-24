@@ -22,7 +22,7 @@
 void PrintStrDLinkedList(DLinkedList *list){
     printf("Result: [");
     DLinkedNode *node;
-    for(node = list->head; node != NULL; node = node->next){
+    for(node = DLinkedListGetHead(list); node != NULL; node = node->next){
         if(node->value != NULL){
             printf("%s", (char *)node->value);
         }
@@ -37,7 +37,7 @@ void PrintStrDLinkedList(DLinkedList *list){
 void PrintStrDLinkedListRev(DLinkedList *list){
     printf("Reversed: [");
     DLinkedNode *node;
-    for(node = list->tail; node != NULL; node = node->prev){
+    for(node = DLinkedListGetTail(list); node != NULL; node = node->prev){
         if(node->value != NULL){
             printf("%s", (char *)node->value);
         }

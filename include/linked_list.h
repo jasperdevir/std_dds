@@ -29,11 +29,7 @@ typedef struct linkedNode {
     struct linkedNode *next;
 } LinkedNode;
 
-typedef struct {
-    LinkedNode *head;
-    LinkedNode *tail;
-    unsigned int length;
-} LinkedList;
+typedef struct linkedList LinkedList;
 
 /**
 * Initialise and allocate memory for a LinkedNode object with a specified pointer value.
@@ -77,6 +73,12 @@ void *LinkedListPop(LinkedList *list);
 * Returns NULL if the list is empty.
 **/
 void *LinkedListPopTail(LinkedList *list);
+
+unsigned int LinkedListGetLength(LinkedList *list);
+
+LinkedNode *LinkedListGetHead(LinkedList *list);
+
+LinkedNode *LinkedListGetTail(LinkedList *list);
 
 /**
 * Free the memory allocated for a LinkedList and its nodes.

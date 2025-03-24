@@ -26,11 +26,7 @@
 
 #include "d_linked_list.h"
 
-typedef struct{
-    DLinkedNode *head;
-    DLinkedNode *tail;
-    int length;
-} Queue;
+typedef struct queue Queue;
 
 /**
 * Initialise and allocate memory for a Queue object.
@@ -51,6 +47,12 @@ void QueueEnqueue(Queue *queue, void *value);
 * @return A pointer to the value of the element removed from the Queue.
 */
 void *QueueDequeue(Queue *queue);
+
+unsigned int QueueGetLength(Queue *queue);
+
+DLinkedNode *QueueGetHead(Queue *queue);
+
+DLinkedNode *QueueGetTail(Queue *queue);
 
 /**
 * Free the memory allocated for a Queue object and its elements.

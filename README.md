@@ -8,10 +8,11 @@ implements of a range of basic dynamic data structures in C.
 - Doublely Linked List
 - Stack
 - Queue
+- Graph (Adjacency Matrix)
 
 ### Data Structures Planned:
 - Graph (Adjacency List)
-- Graph (Adjacency Matrix)
+- Graph (Array of Edges)
 - Tree Graph
 - Hash Map
 

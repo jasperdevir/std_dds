@@ -22,8 +22,8 @@
 
 void PrintIntArrayList(ArrayList *list) {
     printf("Result: [");
-    for (int i = 0; i < list->capacity; i++) {
-        if (i < list->length) {
+    for (int i = 0; i < ArrayListGetCapacity(list); i++) {
+        if (i < ArrayListGetLength(list)) {
             int *value = (int *)ArrayListGetAt(list, i);
             if (value != NULL) {
                 printf("%d", *value);
@@ -34,7 +34,7 @@ void PrintIntArrayList(ArrayList *list) {
             printf("_");
         }
 
-        if (i < list->capacity - 1) {
+        if (i < ArrayListGetCapacity(list) - 1) {
             printf(", ");
         }
     }
@@ -106,7 +106,7 @@ int main(void){
     printf("\n-- ArrayListResize() --\n");
 
     unsigned int listResizeCapacity = 6;
-    printf("Resizeing ArrayList capacity from '%d' to '%d'.\n", list->capacity, listResizeCapacity);
+    printf("Resizeing ArrayList capacity from '%d' to '%d'.\n", ArrayListGetCapacity(list), listResizeCapacity);
     ArrayListResize(list, listResizeCapacity);
     PrintIntArrayList(list);
     
@@ -139,7 +139,7 @@ int main(void){
     printf("\n-- ArrayListGetAt() --\n");
 
     printf("Getting ArrayList elements of by index.\n");
-    for(unsigned int i = 0; i < list->length; i++){
+    for(unsigned int i = 0; i < ArrayListGetLength(list); i++){
         void *value = ArrayListGetAt(list, i);
         if(value != NULL){
             printf("ArrayList element at index [%d] = %d.\n", i, *(int *)value);

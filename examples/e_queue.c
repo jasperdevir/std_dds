@@ -50,7 +50,7 @@ int main(void){
 
     printf("\n-- QueueDequeue() --\n");
 
-    while(queue->length > 0){
+    while(QueueGetLength(queue) > 0){
         printf("Dequeuing head element from Queue.\n");
         void *value = QueueDequeue(queue);
         if(value != NULL){
