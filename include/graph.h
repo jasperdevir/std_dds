@@ -36,11 +36,13 @@ typedef struct {
 typedef struct graphRep Graph;
 
 Graph *GraphInit(unsigned int vLength);
-unsigned int GraphGetVLength(Graph *graph);
-unsigned int GraphGetELength(Graph *graph);
+
 void GraphInsertEdge(Graph *graph, Edge edge, bool directional);
 void GraphRemoveEdge(Graph *graph, Edge *edge, bool directional);
 Edge *GraphGetEdge(Graph *graph, Vertex v, Vertex w);
+
+unsigned int GraphGetVLength(Graph *graph);
+unsigned int GraphGetELength(Graph *graph);
 
 void GraphPrint(Graph *graph, bool directional);
 

@@ -62,7 +62,7 @@ int main(void){
     GraphInsertEdge(graph, e, false);
 
     printf("\n-- GraphPrint() --\n");
-    GraphPrint(graph, false); 
+    //GraphPrint(graph, false); 
 
     printf("\n-- GraphGetEdge() --\n"); 
 
@@ -83,7 +83,7 @@ int main(void){
     GraphRemoveEdge(graph,edge, false);
 
     printf("Result:\n");
-    GraphPrint(graph, false);
+    //GraphPrint(graph, false);
 
     printf("\n-- GraphFree() --\n");
     printf("Freeing Graph.\n");

@@ -25,8 +25,8 @@ typedef struct hashBucket {
 
 typedef struct hashMap {
     HashBucket **values; 
-    unsigned int capacity;
-    unsigned int length;
+    unsigned int bCapacity;
+    unsigned int count;
 } HashMap;
 
 
@@ -58,7 +58,7 @@ HashBucket *HashBucketInit(const char *key, void *value){
     return bucket;
 }
 
-HashMap *HashMapInit(const unsigned int capacity){
+HashMap *HashMapInit(const unsigned int bCapacity){
     HashMap *hashMap = (HashMap *)malloc(sizeof(HashMap));
     if(hashMap == NULL){
         #ifdef STD_DDS_ERROR_MSG
@@ -67,16 +67,16 @@ HashMap *HashMapInit(const unsigned int capacity){
         exit(1); 
     }
 
-    hashMap->values = calloc(capacity, sizeof(HashBucket *));
+    hashMap->values = calloc(bCapacity, sizeof(HashBucket *));
     if(hashMap->values == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] HashMap->items calloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", capacity * sizeof(HashBucket *));
+            fprintf(stderr, "[Error] HashMap->items calloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", bCapacity * sizeof(HashBucket *));
         #endif
         exit(1); 
     }
 
-    hashMap->capacity = capacity;
-    hashMap->length = 0;
+    hashMap->bCapacity = bCapacity;
+    hashMap->count = 0;
 
     return hashMap;
 }
@@ -96,7 +96,7 @@ void *HashMapGet(const HashMap *hashMap, const char *key){
         return NULL;
     }
 
-    unsigned int index = hash(key) % hashMap->capacity;
+    unsigned int index = hash(key) % hashMap->bCapacity;
 
     HashBucket *bucket = hashMap->values[index];
     
@@ -129,7 +129,7 @@ void HashMapSet(HashMap *hashMap, const char *key, void *value){
         return;
     }
 
-    unsigned int index = hash(key) % hashMap->capacity;
+    unsigned int index = hash(key) % hashMap->bCapacity;
 
     HashBucket *bucket = HashBucketInit(key, value);
 
@@ -150,7 +150,7 @@ void HashMapSet(HashMap *hashMap, const char *key, void *value){
         hashMap->values[index] = bucket; 
     }
         
-    hashMap->length++;
+    hashMap->count++;
 }
 
 void *HashMapRemove(HashMap *hashMap, const char *key){
@@ -168,7 +168,7 @@ void *HashMapRemove(HashMap *hashMap, const char *key){
         return NULL;
     }
 
-    unsigned int index = hash(key) % hashMap->capacity;
+    unsigned int index = hash(key) % hashMap->bCapacity;
 
     HashBucket *bucket = hashMap->values[index];
 
@@ -187,7 +187,7 @@ void *HashMapRemove(HashMap *hashMap, const char *key){
         }
 
         free(bucket);
-        hashMap->length--;
+        hashMap->count--;
         return value;
 
     }
@@ -200,7 +200,7 @@ void *HashMapRemove(HashMap *hashMap, const char *key){
             bucket->nextCollision = toRemove->nextCollision;
 
             free(toRemove);
-            hashMap->length--;
+            hashMap->count--;
 
             return value;
         }
@@ -210,7 +210,7 @@ void *HashMapRemove(HashMap *hashMap, const char *key){
     return NULL;
 }
 
-unsigned int HashMapGetLength(const HashMap *hashMap){
+unsigned int HashMapGetCount(const HashMap *hashMap){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] HashMapGetLength failed. HashMap value is NULL. Returning 0.\n");
@@ -218,10 +218,10 @@ unsigned int HashMapGetLength(const HashMap *hashMap){
         return 0;
     }
 
-    return hashMap->length;
+    return hashMap->count;
 }
 
-unsigned int HashMapGetCapacity(const HashMap *hashMap){
+unsigned int HashMapGetBCapacity(const HashMap *hashMap){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] HashMapGetCapacity failed. HashMap value is NULL. Returning 0.\n");
@@ -229,7 +229,7 @@ unsigned int HashMapGetCapacity(const HashMap *hashMap){
         return 0;
     }
 
-    return hashMap->capacity;
+    return hashMap->bCapacity;
 }
 
 void HashMapFree(HashMap *hashMap){
@@ -240,7 +240,7 @@ void HashMapFree(HashMap *hashMap){
         return;
     }
     
-    for(int i = 0; i < hashMap->capacity; i++){
+    for(int i = 0; i < hashMap->bCapacity; i++){
         HashBucket *bucket = hashMap->values[i];
         while(bucket != NULL){
             HashBucket *toFree = bucket;

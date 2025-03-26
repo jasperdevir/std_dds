@@ -32,14 +32,14 @@
 
 typedef struct hashMap HashMap;
 
-HashMap *HashMapInit(const unsigned int capacity);
+HashMap *HashMapInit(const unsigned int bCapacity);
 
 void *HashMapGet(const HashMap *map, const char *key); 
 void HashMapSet(HashMap *map, const char *key, void *value);
 void *HashMapRemove(HashMap *map, const char *key);
 
-unsigned int HashMapGetLength(const HashMap *map);
-unsigned int HashMapGetCapacity(const HashMap *map);
+unsigned int HashMapGetCount(const HashMap *map);
+unsigned int HashMapGetBCapacity(const HashMap *map);
 
 void HashMapFree(HashMap *map);
 
