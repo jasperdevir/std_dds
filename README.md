@@ -9,10 +9,10 @@ implements of a range of basic dynamic data structures in C.
 - Stack
 - Queue
 - Graph (Adjacency Matrix)
+- Graph (Adjacency List)
 - Hash Map
 
 ### Data Structures Planned:
-- Graph (Adjacency List)
 - Graph (Array of Edges)
 - Tree Graph
 
