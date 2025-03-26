@@ -13,7 +13,6 @@ implements of a range of basic dynamic data structures in C.
 - Hash Map
 
 ### Data Structures Planned:
-- Graph (Array of Edges)
 - Tree Graph
 
 ## Contents
