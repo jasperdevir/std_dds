@@ -37,14 +37,14 @@ typedef struct graphRep Graph;
 
 Graph *GraphInit(unsigned int vLength);
 
-void GraphInsertEdge(Graph *graph, Edge edge, bool directional);
-void GraphRemoveEdge(Graph *graph, Edge *edge, bool directional);
+void GraphInsertEdge(Graph *graph, Edge edge);
+void GraphRemoveEdge(Graph *graph, Edge *edge);
 Edge *GraphGetEdge(Graph *graph, Vertex v, Vertex w);
 
 unsigned int GraphGetVLength(Graph *graph);
 unsigned int GraphGetELength(Graph *graph);
 
-void GraphPrint(Graph *graph, bool directional);
+void GraphPrint(Graph *graph);
 
 void GraphFree(Graph *graph);
 

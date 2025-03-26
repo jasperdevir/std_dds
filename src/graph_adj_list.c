@@ -88,7 +88,7 @@ unsigned int GraphGetELength(Graph *graph){
     return graph->eLength;
 }
 
-void GraphInsertEdge(Graph *graph, Edge edge, bool directional){
+void GraphInsertEdge(Graph *graph, Edge edge){
    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] GraphInsertEdge failed. Graph value is NULL.\n");
@@ -128,36 +128,10 @@ void GraphInsertEdge(Graph *graph, Edge edge, bool directional){
         curr->next = node;
     }
 
-    if(!directional){
-        Edge *invertP = (Edge *)malloc(sizeof(Edge));
-        if(invertP == NULL){
-            #ifdef STD_DDS_ERROR_MSG
-                fprintf(stderr, "[Error] Insert edge malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(Edge));
-            #endif
-            exit(1);
-        }
-
-        invertP->v = edge.w;
-        invertP->w = edge.v;
-
-        EdgeNode *invertNode = EdgeNodeInit(edgeP);
-
-        EdgeNode *invertCurr = graph->edges[edge.w];
-
-        if(invertCurr == NULL){
-            graph->edges[edge.w] = invertNode;
-        } else {
-            while(invertCurr->next != NULL){
-                invertCurr = invertCurr->next;
-            }
-            invertCurr->next = node;
-        }
-    }
-
     graph->eLength++;
 }
 
-void GraphRemoveEdge(Graph *graph, Edge *edge, bool directional){
+void GraphRemoveEdge(Graph *graph, Edge *edge){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] GraphRemoveEdge failed. Graph value is NULL.\n");
@@ -197,30 +171,6 @@ void GraphRemoveEdge(Graph *graph, Edge *edge, bool directional){
                 
     }
     
-
-    if(!directional){
-        EdgeNode *invert = graph->edges[edge->w];
-        if(invert == NULL){
-            return;
-        }
-
-        if(invert->edge->v == edge->w && invert->edge->w == edge->v){
-            graph->edges[edge->w] = invert->next;
-            free(invert);
-        } else {
-            while(invert->next != NULL){
-                EdgeNode *invertNext = invert->next;
-                if(invertNext->edge->v == edge->w && invertNext->edge->w == edge->v){
-                    EdgeNode *invertRemove = invertNext;
-                    invert->next = invertRemove->next;
-                    free(invertRemove);
-                    break;
-                }
-                invert = invertNext;
-            }
-            
-        }
-    }
 
     graph->eLength--;
     
@@ -277,7 +227,7 @@ void GraphFree(Graph *graph){
     free(graph);
 }
 
-void GraphPrint(Graph *graph, bool directional){
+void GraphPrint(Graph *graph){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] GraphPrint failed. Graph value is NULL.\n");
@@ -287,26 +237,13 @@ void GraphPrint(Graph *graph, bool directional){
 
     fprintf(stdout, "Graph vLength: %d\n", graph->vLength);
     fprintf(stdout, "Graph eLength: %d\n", graph->eLength);
-    if (directional) {
-        for (int v = 0; v < graph->vLength; v++) {
-            EdgeNode *node = graph->edges[v]; 
-            while (node != NULL) {
-                Edge *edge = node->edge;
-                fprintf(stdout, "[%d]->[%d]\n", edge->v, edge->w);
-                node = node->next;
-            }
+    for (int v = 0; v < graph->vLength; v++) {
+        EdgeNode *node = graph->edges[v]; 
+        while (node != NULL) {
+            Edge *edge = node->edge;
+            fprintf(stdout, "[%d]->[%d]\n", edge->v, edge->w);
+            node = node->next;
         }
-    } else {
-        for (int v = 0; v < graph->vLength; v++) {
-            EdgeNode *node = graph->edges[v];
-            while (node != NULL) {
-                Edge *edge = node->edge;
-                if (v < edge->w) {
-                    fprintf(stdout, "[%d]<->[%d]\n", edge->v, edge->w);
-                }
-                node = node->next;
-            }
-        }
-    }
+    } 
 }
 

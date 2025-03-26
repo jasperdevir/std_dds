@@ -78,7 +78,7 @@ unsigned int GraphGetELength(Graph *graph){
     return graph->eLength;
 }
 
-void GraphInsertEdge(Graph *graph, Edge edge, bool directional){
+void GraphInsertEdge(Graph *graph, Edge edge){
    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] GraphInsertEdge failed. Graph value is NULL.\n");
@@ -106,25 +106,10 @@ void GraphInsertEdge(Graph *graph, Edge edge, bool directional){
 
     graph->edges[edgeP->v][edgeP->w] = edgeP;
 
-    if(!directional){
-        Edge *invertP = (Edge *)malloc(sizeof(Edge));
-        if(invertP == NULL){
-            #ifdef STD_DDS_ERROR_MSG
-                fprintf(stderr, "[Error] Insert edge malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(Edge));
-            #endif
-            exit(1);
-        }
-
-        invertP->v = edge.w;
-        invertP->w = edge.v;
-
-        graph->edges[invertP->v][invertP->w] = invertP;
-    }
-
     graph->eLength++;
 }
 
-void GraphRemoveEdge(Graph *graph, Edge *edge, bool directional){
+void GraphRemoveEdge(Graph *graph, Edge *edge){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] GraphRemoveEdge failed. Graph value is NULL.\n");
@@ -140,16 +125,6 @@ void GraphRemoveEdge(Graph *graph, Edge *edge, bool directional){
     }
 
     graph->edges[edge->v][edge->w] = NULL;
-
-    if(!directional){
-        Edge *inverse = graph->edges[edge->w][edge->v];
-        graph->edges[edge->w][edge->v] = NULL;
-
-        if(inverse != NULL){
-            free(inverse);
-        }
-    }
-
 
     graph->eLength--;
     
@@ -195,7 +170,7 @@ void GraphFree(Graph *graph){
     free(graph);
 }
 
-void GraphPrint(Graph *graph, bool directional){
+void GraphPrint(Graph *graph){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] GraphPrint failed. Graph value is NULL.\n");
@@ -205,24 +180,13 @@ void GraphPrint(Graph *graph, bool directional){
 
     fprintf(stdout, "Graph vLength: %d\n", graph->vLength);
     fprintf(stdout, "Graph eLength: %d\n", graph->eLength);
-    if(directional){
-        for(int v = 0; v < graph->vLength; v++){
-            for(int w = 0; w < graph->vLength; w++){
-                Edge *edge = graph->edges[v][w];
-                if(edge != NULL){
-                    fprintf(stdout, "[%d]->[%d]\n", edge->v, edge->w);
-                }
-            }
-        } 
-    } else {
-        for(int v = 0; v < graph->vLength; v++) {
-            for(int w = v + 1; w < graph->vLength; w++) { 
-                Edge *edge = graph->edges[v][w];
-                if(edge != NULL) {
-                    fprintf(stdout, "[%d]<->[%d]\n", edge->v, edge->w);
-                }
+    for(int v = 0; v < graph->vLength; v++){
+        for(int w = 0; w < graph->vLength; w++){
+            Edge *edge = graph->edges[v][w];
+            if(edge != NULL){
+                fprintf(stdout, "[%d]->[%d]\n", edge->v, edge->w);
             }
         }
-    }
+    } 
 }
 

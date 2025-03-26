@@ -35,34 +35,34 @@ int main(void){
     a.v = 0;
     a.w = 1;
     printf("Inserting edge, '%d - %d` into Graph.\n", a.v, a.w);    
-    GraphInsertEdge(graph, a, false);
+    GraphInsertEdge(graph, a);
 
     Edge b;
     b.v = 0;
     b.w = 3;
     printf("Inserting edge, '%d - %d` into Graph.\n", b.v, b.w);    
-    GraphInsertEdge(graph, b, false);
+    GraphInsertEdge(graph, b);
 
     Edge c;
     c.v = 1;
     c.w = 3;
     printf("Inserting edge, '%d - %d` into Graph.\n", c.v, c.w);    
-    GraphInsertEdge(graph, c, false);
+    GraphInsertEdge(graph, c);
 
     Edge d;
     d.v = 2;
     d.w = 3;
     printf("Inserting edge, '%d - %d` into Graph.\n", d.v, d.w);    
-    GraphInsertEdge(graph, d, false);
+    GraphInsertEdge(graph, d);
 
     Edge e;
     e.v = 1;
     e.w = 2;
     printf("Inserting edge, '%d - %d` into Graph.\n", e.v, e.w);    
-    GraphInsertEdge(graph, e, false);
+    GraphInsertEdge(graph, e);
 
     printf("\n-- GraphPrint() --\n");
-    //GraphPrint(graph, false); 
+    GraphPrint(graph); 
 
     printf("\n-- GraphGetEdge() --\n"); 
 
@@ -80,10 +80,10 @@ int main(void){
     printf("\n-- GraphRemoveEdge() --\n");
 
     printf("Removing edge, '%d - %d' from Graph.\n", eV, eW);
-    GraphRemoveEdge(graph,edge, false);
+    GraphRemoveEdge(graph,edge);
 
     printf("Result:\n");
-    //GraphPrint(graph, false);
+    GraphPrint(graph);
 
     printf("\n-- GraphFree() --\n");
     printf("Freeing Graph.\n");
