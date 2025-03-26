@@ -15,6 +15,9 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef STD_DDS_ARRAY_LIST
+#define STD_DDS_ARRAY_LIST
+
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
 #endif
@@ -100,3 +103,5 @@ unsigned int ArrayListGetCapacity(ArrayList *list);
 * @param The ArrayList to free.
 **/
 void ArrayListFree(ArrayList* list);
+
+#endif // STD_DDS_ARRAY_LIST

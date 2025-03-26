@@ -30,3 +30,4 @@ E.g.
 #include "d_linked_list.h"
 #include "stack.h"
 #include "queue.h"
+#include "hash_map.h"

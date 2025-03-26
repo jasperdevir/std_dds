@@ -15,6 +15,9 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef STD_DDS_STACK
+#define STD_DDS_STACK
+
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
 #define STD_DDS_ERROR_MSG
 #endif
@@ -59,3 +62,5 @@ LinkedNode *StackGetHead(Stack *stack);
  * @param The Stack to free.
  **/
 void StackFree(Stack *stack);
+
+#endif // STD_DDS_STACK

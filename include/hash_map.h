@@ -13,37 +13,34 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
- */
+*/
 
-#ifndef STD_DDS_GRAPH
-#define STD_DDS_GRAPH
+#ifndef STD_DDS_HASH_MAP
+#define STD_DDS_HASH_MAP
 
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
 #endif
 
-#include <stdbool.h>
-#include <stdio.h>
+#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
+    #include <stdio.h>
+#endif
 #include <stdlib.h>
+#include <string.h>
 
-typedef unsigned int Vertex;
+#define STD_DDS_MAX_KEY 256
 
-typedef struct {
-  Vertex v;
-  Vertex w;
-} Edge;
+typedef struct hashMap HashMap;
 
-typedef struct graphRep Graph;
+HashMap *HashMapInit(const unsigned int capacity);
 
-Graph *GraphInit(unsigned int vLength);
-unsigned int GraphGetVLength(Graph *graph);
-unsigned int GraphGetELength(Graph *graph);
-void GraphInsertEdge(Graph *graph, Edge edge, bool directional);
-void GraphRemoveEdge(Graph *graph, Edge *edge, bool directional);
-Edge *GraphGetEdge(Graph *graph, Vertex v, Vertex w);
+void *HashMapGet(const HashMap *map, const char *key); 
+void HashMapSet(HashMap *map, const char *key, void *value);
+void *HashMapRemove(HashMap *map, const char *key);
 
-void GraphPrint(Graph *graph, bool directional);
+unsigned int HashMapGetLength(const HashMap *map);
+unsigned int HashMapGetCapacity(const HashMap *map);
 
-void GraphFree(Graph *graph);
+void HashMapFree(HashMap *map);
 
-#endif // STD_DDS_GRAPH
+#endif // STD_DDS_HASH_MAP

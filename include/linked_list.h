@@ -15,6 +15,9 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef STD_DDS_LINKED_LIST
+#define STD_DDS_LINKED_LIST
+
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
 #endif
@@ -86,3 +89,5 @@ LinkedNode *LinkedListGetTail(LinkedList *list);
 * @param list The LinkedList to free.
 **/
 void LinkedListFree(LinkedList *list);
+
+#endif // STD_DDS_LINKED_LIST

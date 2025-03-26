@@ -15,6 +15,9 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef STD_DDS_QUEUE
+#define STD_DDS_QUEUE
+
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
 #endif
@@ -60,3 +63,5 @@ DLinkedNode *QueueGetTail(Queue *queue);
 * @param The Queue to free.
 **/
 void QueueFree(Queue *queue);
+
+#endif // STD_DDS_QUEUE
