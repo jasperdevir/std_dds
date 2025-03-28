@@ -17,19 +17,28 @@
 
 #include "d_linked_list.h"
 
+#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
+    #define STD_DDS_ERROR_MSG
+#endif
+
+#include <stdlib.h>
+#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
+    #include <stdio.h>
+#endif
+
 typedef struct dLinkedList {
     DLinkedNode *head;
     DLinkedNode *tail;
-    unsigned int length;
+    size_t length;
 } DLinkedList;
 
 DLinkedNode *DLinkedNodeInit(void *value){
     DLinkedNode *node = (DLinkedNode *)malloc(sizeof(DLinkedNode));
     if(node == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] DLinkedNode malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(DLinkedNode));
+            fprintf(stderr, "[Error] DLinkedNode malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(DLinkedNode));
         #endif
-        exit(1);
+        return NULL;
     }
 
     node->value = value;
@@ -43,9 +52,9 @@ DLinkedList *DLinkedListInit(){
     DLinkedList *list = (DLinkedList *)malloc(sizeof(DLinkedList));
     if(list == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] DLinkedList malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(DLinkedList));
+            fprintf(stderr, "[Error] DLinkedList malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(DLinkedList));
         #endif
-        exit(1);
+        return NULL;
     }
 
     list->head = NULL;
@@ -55,15 +64,18 @@ DLinkedList *DLinkedListInit(){
     return list;
 }
 
-void DLinkedListPush(DLinkedList *list, void *value){
+int DLinkedListPush(DLinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] DLinkedListPush failed. DLinkedList value is NULL.\n");
+            fprintf(stderr, "[Warning] DLinkedListPush failed. DLinkedList value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     DLinkedNode *node = DLinkedNodeInit(value);
+    if(node == NULL){
+        return 1;
+    }
 
     if(list->head != NULL){
         list->head->prev = node;
@@ -77,17 +89,22 @@ void DLinkedListPush(DLinkedList *list, void *value){
     }
 
     list->length++;
+
+    return 0;
 }
 
-void DLinkedListAppend(DLinkedList *list, void *value){
+int DLinkedListAppend(DLinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] DLinkedListAppend failed. DLinkedList value is NULL.\n");
+            fprintf(stderr, "[Warning] DLinkedListAppend failed. DLinkedList value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     DLinkedNode *node = DLinkedNodeInit(value);
+    if(node == NULL){
+        return 1;
+    }
 
     if(list->tail != NULL){
         list->tail->next = node;
@@ -101,12 +118,14 @@ void DLinkedListAppend(DLinkedList *list, void *value){
     }
 
     list->length++;
+
+    return 0;
 }
 
 void *DLinkedListPop(DLinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] DLinkedListPop failed. DLinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] DLinkedListPop failed. DLinkedList value is NULL.\n");
         #endif
         return NULL;
     }
@@ -115,7 +134,7 @@ void *DLinkedListPop(DLinkedList *list){
     
     if(currHead == NULL || list->length < 1){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] Unable to pop element from DLinkedList as its current length is 0. Returning NULL.\n");
+            fprintf(stderr, "[Warning] Unable to pop element from DLinkedList as its current length is 0.\n");
         #endif
         return NULL;
     }
@@ -143,7 +162,7 @@ void *DLinkedListPop(DLinkedList *list){
 void *DLinkedListPopTail(DLinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] DLinkedListPopTail failed. DLinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] DLinkedListPopTail failed. DLinkedList value is NULL.\n");
         #endif
         return NULL;
     }
@@ -152,7 +171,7 @@ void *DLinkedListPopTail(DLinkedList *list){
 
     if(currTail == NULL || list->length < 1){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] Unable to pop tail element from DLinkedList as its current length is 0. Returning NULL.\n");
+            fprintf(stderr, "[Warning] Unable to pop tail element from DLinkedList as its current length is 0.\n");
         #endif
         return NULL;
     }
@@ -176,10 +195,10 @@ void *DLinkedListPopTail(DLinkedList *list){
     return value;
 }
 
-unsigned int DLinkedListGetLength(DLinkedList *list){
+size_t DLinkedListGetLength(const DLinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] DLinkedListGetLength failed. DLinkedList value is NULL. Returning 0.\n");
+            fprintf(stderr, "[Warning] DLinkedListGetLength failed. DLinkedList value is NULL.\n");
         #endif
         return 0;
     }
@@ -187,10 +206,10 @@ unsigned int DLinkedListGetLength(DLinkedList *list){
     return list->length;
 }
 
-DLinkedNode *DLinkedListGetHead(DLinkedList *list){
+DLinkedNode *DLinkedListGetHead(const DLinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] DLinkedListGetHead failed. DLinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] DLinkedListGetHead failed. DLinkedList value is NULL. Returning NULL.\n");
         #endif
         return NULL;
     }
@@ -198,10 +217,10 @@ DLinkedNode *DLinkedListGetHead(DLinkedList *list){
     return list->head;
 }
 
-DLinkedNode *DLinkedListGetTail(DLinkedList *list){
+DLinkedNode *DLinkedListGetTail(const DLinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] DLinkedListGetTail failed. DLinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] DLinkedListGetTail failed. DLinkedList value is NULL. Returning NULL.\n");
         #endif
         return NULL;
     }
@@ -209,12 +228,12 @@ DLinkedNode *DLinkedListGetTail(DLinkedList *list){
     return list->tail;
 }
 
-void DLinkedListFree(DLinkedList *list){
+int DLinkedListFree(DLinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] DLinkedListFree failed. DLinkedList value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     DLinkedNode *node = list->head;
@@ -225,4 +244,6 @@ void DLinkedListFree(DLinkedList *list){
     }
 
     free(list);
+
+    return 0;
 }

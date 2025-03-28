@@ -47,8 +47,8 @@ int main(void){
 
     printf("\n-- ArrayListInit() --\n");
 
-    unsigned int listCapacity = 5;
-    printf("Initialising an ArrayList with a capacity of '%d' elements.\n", listCapacity);
+    size_t listCapacity = 5;
+    printf("Initialising an ArrayList with a capacity of '%zu' elements.\n", listCapacity);
     ArrayList *list = ArrayListInit(5);
     PrintIntArrayList(list);
 
@@ -105,46 +105,46 @@ int main(void){
 
     printf("\n-- ArrayListResize() --\n");
 
-    unsigned int listResizeCapacity = 6;
-    printf("Resizeing ArrayList capacity from '%d' to '%d'.\n", ArrayListGetCapacity(list), listResizeCapacity);
+    size_t listResizeCapacity = 6;
+    printf("Resizeing ArrayList capacity from '%zu' to '%zu'.\n", ArrayListGetCapacity(list), listResizeCapacity);
     ArrayListResize(list, listResizeCapacity);
     PrintIntArrayList(list);
     
     printf("\n-- ArrayListInsertAt() --\n");
 
-    unsigned int insertIndex;
+    int insertIndex;
 
     int e = 6;
     insertIndex = 1;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", e, insertIndex);
-    ArrayListInsertAt(list, &e, insertIndex);
+    ArrayListInsertAt(list, insertIndex, &e);
 
     int f = 7;
     insertIndex++;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", f, insertIndex);
-    ArrayListInsertAt(list, &f, insertIndex); 
+    ArrayListInsertAt(list, insertIndex, &f); 
 
     int g = 8;
     insertIndex++;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", g, insertIndex);
-    ArrayListInsertAt(list, &g, insertIndex); 
+    ArrayListInsertAt(list, insertIndex, &g); 
 
     int h = 9;
     insertIndex++;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", h, insertIndex);
-    ArrayListInsertAt(list, &h, insertIndex); 
+    ArrayListInsertAt(list, insertIndex, &h); 
 
     PrintIntArrayList(list);
 
     printf("\n-- ArrayListGetAt() --\n");
 
     printf("Getting ArrayList elements of by index.\n");
-    for(unsigned int i = 0; i < ArrayListGetLength(list); i++){
+    for(size_t i = 0; i < ArrayListGetLength(list); i++){
         void *value = ArrayListGetAt(list, i);
         if(value != NULL){
-            printf("ArrayList element at index [%d] = %d.\n", i, *(int *)value);
+            printf("ArrayList element at index [%zu] = %d.\n", i, *(int *)value);
         } else {
-            printf("Unable to get ArrayList element at index [%d]. Exiting.\n", i);
+            printf("Unable to get ArrayList element at index [%zu]. Exiting.\n", i);
             return 1;
         }
     }

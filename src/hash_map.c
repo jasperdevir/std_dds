@@ -17,6 +17,18 @@
 
 #include "hash_map.h"
 
+#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
+    #define STD_DDS_ERROR_MSG
+#endif
+
+#include <stdlib.h>
+#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
+    #include <stdio.h>
+#endif
+#include <string.h>
+
+#define STD_DDS_MAX_KEY 256
+
 typedef struct hashBucket { 
     void *value;
     char key[STD_DDS_MAX_KEY];
@@ -25,13 +37,14 @@ typedef struct hashBucket {
 
 typedef struct hashMap {
     HashBucket **values; 
-    unsigned int bCapacity;
-    unsigned int count;
+    size_t bCapacity;
+    size_t count;
 } HashMap;
 
-
-// djb2 by Dan Bernstein.
-// http://www.cse.yorku.ca/~oz/hash.html
+/**
+ * djb2 by Dan Bernstein.
+ * http://www.cse.yorku.ca/~oz/hash.html
+**/
 unsigned int hash(const char *str){
     unsigned int hash = 5381;
     int c;
@@ -46,9 +59,9 @@ HashBucket *HashBucketInit(const char *key, void *value){
     HashBucket *bucket = (HashBucket *)malloc(sizeof(HashBucket));
     if(bucket == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] HashBucket malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(HashBucket *));
+            fprintf(stderr, "[Error] HashBucket malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(HashBucket));
         #endif
-        exit(1); 
+        return NULL; 
     }
 
     strcpy(bucket->key, key);
@@ -58,21 +71,21 @@ HashBucket *HashBucketInit(const char *key, void *value){
     return bucket;
 }
 
-HashMap *HashMapInit(const unsigned int bCapacity){
+HashMap *HashMapInit(const size_t bCapacity){
     HashMap *hashMap = (HashMap *)malloc(sizeof(HashMap));
     if(hashMap == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] HashMap malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(HashMap));
+            fprintf(stderr, "[Error] HashMap malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(HashMap));
         #endif
-        exit(1); 
+        return NULL;
     }
 
     hashMap->values = calloc(bCapacity, sizeof(HashBucket *));
     if(hashMap->values == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] HashMap->items calloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", bCapacity * sizeof(HashBucket *));
+            fprintf(stderr, "[Error] HashMap->items calloc failed. Unable to allocate memory of %zu bytes.\n", bCapacity * sizeof(HashBucket *));
         #endif
-        exit(1); 
+        return NULL;
     }
 
     hashMap->bCapacity = bCapacity;
@@ -84,14 +97,14 @@ HashMap *HashMapInit(const unsigned int bCapacity){
 void *HashMapGet(const HashMap *hashMap, const char *key){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapGet failed. HashMap value is NULL. Returning NULL.\n");
+            fprintf(stdout, "[Warning] HashMapGet failed. HashMap value is NULL.\n");
         #endif
         return NULL;
     }
 
     if(key == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapGet failed. Key value is NULL. Returning NULL.\n");
+            fprintf(stdout, "[Warning] HashMapGet failed. Key value is NULL.\n");
         #endif
         return NULL;
     }
@@ -114,19 +127,19 @@ void *HashMapGet(const HashMap *hashMap, const char *key){
     return NULL;
 }
 
-void HashMapSet(HashMap *hashMap, const char *key, void *value){
+int HashMapSet(HashMap *hashMap, const char *key, void *value){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapSet failed. HashMap value is NULL.\n");
+            fprintf(stderr, "[Warning] HashMapSet failed. HashMap value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     if(key == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapSet failed. Key value is NULL.\n");
+            fprintf(stderr, "[Warning] HashMapSet failed. Key value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     unsigned int index = hash(key) % hashMap->bCapacity;
@@ -138,10 +151,7 @@ void HashMapSet(HashMap *hashMap, const char *key, void *value){
         while(parent->nextCollision != NULL){
             if (strcmp(parent->key, key) == 0) {
                 parent->value = value;
-                #ifdef STD_DDS_WARNING_MSG
-                    fprintf(stdout, "[Warning] Key '%s' already in HashMap overriding value.\n", key);
-                #endif
-                return;
+                return 0;
             }
             parent = parent->nextCollision;
         }
@@ -151,19 +161,21 @@ void HashMapSet(HashMap *hashMap, const char *key, void *value){
     }
         
     hashMap->count++;
+
+    return 0;
 }
 
 void *HashMapRemove(HashMap *hashMap, const char *key){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapRemove failed. HashMap value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] HashMapRemove failed. HashMap value is NULL. Returning NULL.\n");
         #endif
         return NULL;
     }
 
     if(key == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapRemove failed. Key value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] HashMapRemove failed. Key value is NULL. Returning NULL.\n");
         #endif
         return NULL;
     }
@@ -189,7 +201,6 @@ void *HashMapRemove(HashMap *hashMap, const char *key){
         free(bucket);
         hashMap->count--;
         return value;
-
     }
         
     while(bucket->nextCollision != NULL) {
@@ -210,10 +221,10 @@ void *HashMapRemove(HashMap *hashMap, const char *key){
     return NULL;
 }
 
-unsigned int HashMapGetCount(const HashMap *hashMap){
+size_t HashMapGetCount(const HashMap *hashMap){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapGetLength failed. HashMap value is NULL. Returning 0.\n");
+            fprintf(stderr, "[Warning] HashMapGetLength failed. HashMap value is NULL.\n");
         #endif
         return 0;
     }
@@ -221,10 +232,10 @@ unsigned int HashMapGetCount(const HashMap *hashMap){
     return hashMap->count;
 }
 
-unsigned int HashMapGetBCapacity(const HashMap *hashMap){
+size_t HashMapGetBCapacity(const HashMap *hashMap){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] HashMapGetCapacity failed. HashMap value is NULL. Returning 0.\n");
+            fprintf(stderr, "[Warning] HashMapGetCapacity failed. HashMap value is NULL.\n");
         #endif
         return 0;
     }
@@ -232,12 +243,12 @@ unsigned int HashMapGetBCapacity(const HashMap *hashMap){
     return hashMap->bCapacity;
 }
 
-void HashMapFree(HashMap *hashMap){
+int HashMapFree(HashMap *hashMap){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] HashMapFree failed. HashMap value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
     
     for(int i = 0; i < hashMap->bCapacity; i++){
@@ -252,4 +263,6 @@ void HashMapFree(HashMap *hashMap){
     free(hashMap->values);
 
     free(hashMap);
+
+    return 0;
 }

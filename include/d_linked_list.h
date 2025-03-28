@@ -18,14 +18,7 @@
 #ifndef STD_DDS_D_LINKED_LIST
 #define STD_DDS_D_LINKED_LIST
 
-#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
-    #define STD_DDS_ERROR_MSG
-#endif
-
 #include <stdlib.h>
-#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
-    #include <stdio.h>
-#endif
 
 typedef struct dlinkedNode{
     void *value;
@@ -36,60 +29,80 @@ typedef struct dlinkedNode{
 typedef struct dLinkedList DLinkedList;
 
 /**
-* Initialise and allocate memory for a DLinkedNode object with a specified pointer value.
-* @param value The value of the DLinkedNode.
-* @return A pointer to the initialised DLinkedNode.
+ * Initialise and allocate memory for a DLinkedNode object with a specified pointer value.
+ * @param value The value of the DLinkedNode.
+ * @return A pointer to the initialised DLinkedNode.
 **/
 DLinkedNode *DLinkedNodeInit(void *value);
 
 
 /** Initialise and allocate memory for a DLinkedList object.
-* @return A pointer to the initialised DLinkedList.
+ * @return A pointer to the initialised DLinkedList.
 **/
 DLinkedList *DLinkedListInit();
 
 /** 
-* Push a new node onto the head of a DLinkedList.
-* @param list The DLinkedList to push a node onto.
-* @param value A pointer to the value to push onto the list.
+ * Push a new node onto the head of a DLinkedList.
+ * @param list The DLinkedList to push a node onto.
+ * @param value A pointer to the value to push onto the list.
+ * @return 0 if successful.
 **/
-void DLinkedListPush(DLinkedList *list, void *value);
+int DLinkedListPush(DLinkedList *list, void *value);
 
 /**
-* Append a new node to the tail of a DLinkedList.
-* @param list The DLinkedList to append a node to.
-* @param value A pointer to the value to append to the list.
+ * Append a new node to the tail of a DLinkedList.
+ * @param list The DLinkedList to append a node to.
+ * @param value A pointer to the value to append to the list.
+ * @return 0 if successful.
 **/
-void DLinkedListAppend(DLinkedList *list, void *value);
+int DLinkedListAppend(DLinkedList *list, void *value);
 
 /**
-* Remove the head node of a DLinkedList.
-* @param list The DLinkedList to pop the head node from.
-* @return A pointer to the value of the node removed from the list. 
-* Returns NULL if the list is empty.
+ * Remove the head node of a DLinkedList.
+ * @param list The DLinkedList to pop the head node from.
+ * @return A pointer to the value of the node removed from the list. 
+ * Returns NULL if the list is empty.
 **/
 void *DLinkedListPop(DLinkedList *list);
 
 /**
-* Remove the tail node of a DLinkedList.
-* @param list The DLinkedList to pop the tail node from.
-* @return A pointer to the vaue of the node removed from the list.
-* Returns NULL if the list is empty.
+ * Remove the tail node of a DLinkedList.
+ * @param list The DLinkedList to pop the tail node from.
+ * @return A pointer to the value of the node removed from the list.
+ * Returns NULL if the list is empty.
 **/
 void *DLinkedListPopTail(DLinkedList *list);
 
-unsigned int DLinkedListGetLength(DLinkedList *list);
-
-DLinkedNode *DLinkedListGetHead(DLinkedList *list);
-
-DLinkedNode *DLinkedListGetTail(DLinkedList *list);
 
 /**
-* Remove the tail node of a DLinkedList.
-* @param list The DLinkedList to pop the tail node from.
-* @return A pointer to the value of the node removed from the list.
-* Returns NULL if the list is empty.
+ * Get the current length of a DLinkedList.
+ * @param list The DLinkedList to query.
+ * @return The DLinkedList's length.
 **/
-void DLinkedListFree(DLinkedList *list);
+size_t DLinkedListGetLength(const DLinkedList *list);
+
+/**
+ * Get the current head element of a DLinkedList.
+ * @param list The DLinkedLIst to query.
+ * @return The DLinkedList's head element.
+ * Returns NULL if the list is empty.
+**/
+DLinkedNode *DLinkedListGetHead(const DLinkedList *list);
+
+/**
+ * Get the current tail element of a DLinkedList.
+ * @param list The DLinkedLIst to query.
+ * @return The DLinkedList's tail element.
+ * Returns NULL if the list is empty.
+**/
+DLinkedNode *DLinkedListGetTail(const DLinkedList *list);
+
+/**
+ * Free the memory allocated for a DLinkedList object and its nodes.
+ * DOES NOT free the memory of each element's value in its nodes.
+ * @param The DLinkedList to free.
+ * @return 0 if successful.
+**/
+int DLinkedListFree(DLinkedList *list);
 
 #endif // STD_DDS_D_LINKED_LIST

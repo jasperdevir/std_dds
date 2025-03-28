@@ -61,9 +61,6 @@ int main(void){
     printf("Inserting edge, '%d - %d` into Graph.\n", e.v, e.w);    
     GraphInsertEdge(graph, e);
 
-    printf("\n-- GraphPrint() --\n");
-    GraphPrint(graph); 
-
     printf("\n-- GraphGetEdge() --\n"); 
 
     unsigned int eV = 1;
@@ -73,7 +70,7 @@ int main(void){
     Edge *edge = GraphGetEdge(graph, eV, eW);
     if(edge == NULL){
         printf("GraphGetEdge failed. Returned NULL.\n");
-        exit(1);
+        return 1;
     }
     printf("Edge successfully returned: '%p'\n", edge);
 
@@ -81,9 +78,6 @@ int main(void){
 
     printf("Removing edge, '%d - %d' from Graph.\n", eV, eW);
     GraphRemoveEdge(graph,edge);
-
-    printf("Result:\n");
-    GraphPrint(graph);
 
     printf("\n-- GraphFree() --\n");
     printf("Freeing Graph.\n");

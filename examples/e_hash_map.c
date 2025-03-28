@@ -64,7 +64,7 @@ int main(void){
     value = HashMapRemove(map, aKey);
     if(value == NULL){
         printf("Removing key '%s' from HashMap was unsuccessful. Exiting.\n", aKey); 
-        exit(1);
+        return 1;
     } else {
         printf("Succesfully removed key '%s' with value '%d' from HashMap.\n", aKey, *(int *)value);
     }
@@ -74,7 +74,7 @@ int main(void){
     value = HashMapGet(map, bKey);
     if(value == NULL){
         printf("Getting key '%s' from HashMap was unsuccessful. Exiting.\n", bKey); 
-        exit(1);
+        return 1;
     } else {
         printf("Succesfully got key '%s' with value '%d' from HashMap.\n", bKey, *(int *)value);
     }

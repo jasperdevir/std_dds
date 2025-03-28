@@ -17,74 +17,87 @@
 
 #include "stack.h"
 
+#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
+    #define STD_DDS_ERROR_MSG
+#endif
+
+#include <stdlib.h>
+#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
+    #include <stdio.h>
+#endif
+
 typedef struct stack {
     LinkedNode *head;
-    int length;
+    size_t length;
 } Stack;
 
 Stack *StackInit() {
     Stack *stack = (Stack *)malloc(sizeof(Stack));
     if (stack == NULL) {
-      #ifdef STD_DDS_ERROR_MSG
-          fprintf(stderr, "[Error] Stack malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(Stack));
-      #endif
-      exit(1);
+        #ifdef STD_DDS_ERROR_MSG
+            fprintf(stderr, "[Error] Stack malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(Stack));
+        #endif
+        return NULL;
     }
   
-      stack->head = NULL;
+    stack->head = NULL;
     stack->length = 0;
   
     return stack;
-  }
+}
   
-  void StackPush(Stack *stack, void *value) {
-      if (stack == NULL) {
-          #ifdef STD_DDS_WARNING_MSG
-              fprintf(stdout, "[Warning] StackPush failed. Stack value is NULL.\n");
-          #endif
-          return;
-      }
+int StackPush(Stack *stack, void *value) {
+    if (stack == NULL) {
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] StackPush failed. Stack value is NULL.\n");
+        #endif
+        return 1;
+    }
   
-      LinkedNode *node = LinkedNodeInit(value);
+    LinkedNode *node = LinkedNodeInit(value);
+    if(node == NULL){
+        return 1;
+    }
   
-      node->next = stack->head;
-      stack->head = node;
+    node->next = stack->head;
+    stack->head = node;
   
-      stack->length++;
-  }
-  
-  void *StackPop(Stack *stack) {
-      if (stack == NULL) {
-          #ifdef STD_DDS_WARNING_MSG
-              fprintf(stdout, "[Warning] StackPop failed. Stack value is NULL. Returning NULL.\n");
-          #endif
-          return NULL;
-      }
-  
-      LinkedNode *node = stack->head;
-  
-      if(node == NULL || stack->length < 1){
-          #ifdef STD_DDS_WARNING_MSG
-              fprintf(stdout, "[Warning] Unable to pop element from Stack as its current length is 0. Returning NULL.\n");
-          #endif
-          return NULL;
-      }
-  
-      stack->head = node->next;
-      stack->length--;
-  
-      void *value = node->value;
-  
-      free(node);
-  
-      return value;
-  
-  }
+    stack->length++;
 
-unsigned int StackGetLength(Stack *stack){
+    return 0;
+}
+  
+void *StackPop(Stack *stack) {
+    if (stack == NULL) {
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] StackPop failed. Stack value is NULL.\n");
+        #endif
+        return NULL;
+    }
+  
+    LinkedNode *node = stack->head;
+  
+    if(node == NULL || stack->length < 1){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] Unable to pop element from Stack as its current length is 0.\n");
+        #endif
+        return NULL;
+    }
+  
+    stack->head = node->next;
+    stack->length--;
+  
+    void *value = node->value;
+  
+    free(node);
+  
+    return value;
+}
+
+size_t StackGetLength(const Stack *stack){
     if(stack == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] StackGetLength failed. Stack value is NULL. Returning 0.\n");
+            fprintf(stderr, "[Warning] StackGetLength failed. Stack value is NULL.\n");
         #endif
         return 0;
     }
@@ -92,10 +105,10 @@ unsigned int StackGetLength(Stack *stack){
     return stack->length;
 }
 
-LinkedNode *StackGetHead(Stack *stack){
+LinkedNode *StackGetHead(const Stack *stack){
     if(stack == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] StackGetHead failed. Stack value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] StackGetHead failed. Stack value is NULL.\n");
         #endif
         return NULL;
     }
@@ -103,20 +116,22 @@ LinkedNode *StackGetHead(Stack *stack){
     return stack->head;
 }
   
-  void StackFree(Stack *stack) {
-      if(stack == NULL){
-          #ifdef STD_DDS_WARNING_MSG
-              fprintf(stdout, "[Warning] StackFree failed. Stack value is NULL.\n");
-          #endif
-          return;
-      }
+int StackFree(Stack *stack) {
+    if(stack == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] StackFree failed. Stack value is NULL.\n");
+        #endif
+        return 1;
+    }
   
-      LinkedNode *node = stack->head;
-      while(node != NULL){
-          LinkedNode *next = node->next;
-          free(node);
-          node = next;
-      }
+    LinkedNode *node = stack->head;
+    while(node != NULL){
+        LinkedNode *next = node->next;
+        free(node);
+        node = next;
+    }
   
     free(stack);
-  }
+
+    return 0;
+}

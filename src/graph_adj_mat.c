@@ -17,49 +17,61 @@
 
 #include "graph.h"
 
+#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
+    #define STD_DDS_ERROR_MSG
+#endif
+
+#include <stdlib.h>
+#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
+    #include <stdio.h>
+#endif
+#include "array_list.h"
+
 typedef struct graphRep {
-    Edge ***edges;
-    unsigned int vLength;
-    unsigned int eLength;
+    ArrayList *edges;
+    size_t vLength;
+    size_t eLength;
 } Graph;
 
-Graph *GraphInit(unsigned int vLength){
+Graph *GraphInit(const size_t vLength){
     Graph *graph = (Graph *)malloc(sizeof(Graph));
     if(graph == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] Graph malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(Graph));
+            fprintf(stderr, "[Error] Graph malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(Graph));
         #endif
-        exit(1);
+        return NULL;
     }
 
     graph->vLength = vLength;
     graph->eLength = 0;
     
-    graph->edges = malloc(graph->vLength * sizeof(Edge *));
+    graph->edges = ArrayListInit(graph->vLength);
     if(graph->edges == NULL){
-        #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] Graph edges malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", graph->vLength * sizeof(Edge *));
-        #endif
-        exit(1);
-    } 
+        return NULL;
+    }
 
     for(int i = 0; i < graph->vLength; i++){
-        graph->edges[i] = calloc(graph->vLength, sizeof(Edge *));
-        if(graph->edges[i] == NULL){
-            #ifdef STD_DDS_ERROR_MSG
-                fprintf(stderr, "[Error] Graph edges calloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", graph->vLength * sizeof(Edge));
-            #endif
-            exit(1);
+        ArrayList *vList = ArrayListInit(graph->vLength);
+        if(vList == NULL){
+            return NULL;
+        }
+
+        if(ArrayListFill(vList, NULL) != 0){
+            return NULL;
+        }
+
+        if(ArrayListAppend(graph->edges, vList) != 0){
+            return NULL;
         }
     }
 
     return graph;
 }
 
-unsigned int GraphGetVLength(Graph *graph){
+size_t GraphGetVLength(const Graph *graph){
    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] GraphGetVLength failed. Graph value is NULL. Returning 0. \n");
+            fprintf(stderr, "[Warning] GraphGetVLength failed. Graph value is NULL.\n");
         #endif
         return 0;
     } 
@@ -67,10 +79,10 @@ unsigned int GraphGetVLength(Graph *graph){
     return graph->vLength;
 }
 
-unsigned int GraphGetELength(Graph *graph){
+size_t GraphGetELength(const Graph *graph){
    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] GraphGetELength failed. Graph value is NULL. Returning 0. \n");
+            fprintf(stderr, "[Warning] GraphGetELength failed. Graph value is NULL.\n");
         #endif
         return 0;
     } 
@@ -78,115 +90,198 @@ unsigned int GraphGetELength(Graph *graph){
     return graph->eLength;
 }
 
-void GraphInsertEdge(Graph *graph, Edge edge){
-   if(graph == NULL){
+int GraphAddVertices(Graph *graph, const size_t amount){
+    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] GraphInsertEdge failed. Graph value is NULL.\n");
+            fprintf(stderr, "[Warning] GraphAddVertices failed. Graph value is NULL.\n");
         #endif
-        return;
+        return 1;
+    } 
+
+    for(int i = 0; i < graph->vLength; i++){
+        if(ArrayListResize(ArrayListGetAt(graph->edges, i), graph->vLength + amount) != 0){
+            return 1;
+        }
+    }
+
+    if(ArrayListResize(graph->edges, graph->vLength + amount) != 0){
+        return 1;
+    }
+
+    graph->vLength += amount;
+
+    for(int i = 0; i < amount; i++){
+        ArrayList *vList = ArrayListInit(graph->vLength);
+        if(vList == NULL){
+            return 1;
+        }
+
+        if(ArrayListFill(vList, NULL) != 0){
+            return 1;
+        }
+
+        if(ArrayListAppend(graph->edges, vList) != 0){
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+/*
+int GraphRemoveVertex(Graph *graph, const Vertex v){
+    if(graph == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] GraphRemoveVertex failed. Graph value is NULL.\n");
+        #endif
+        return 1;
+    }
+
+    if(v > graph->vLength - 1){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] Vertex '%d' is out-of-bounds for Graph with a vLength of '%d'.\n", v, graph->vLength);
+        #endif
+        return 1;
+    }
+    
+    unsigned int edgesRemoved = 0;
+
+    ArrayList *vList = ArrayListRemoveAt(graph->edges, v);
+    if(vList == NULL){
+        return 1;
+    }
+
+    for(int i = 0; i < ArrayListGetLength(vList); i++){
+        Edge *edge = ArrayListGetAt(vList, i);
+        if(edge != NULL){
+            edgesRemoved++;
+            free(edge);
+        }
+    }
+
+    if(ArrayListFree(vList) != 0){
+        return 1;
+    }
+
+    graph->eLength -= edgesRemoved;
+    graph->vLength--;
+
+    return 0;
+}
+*/
+
+int GraphInsertEdge(Graph *graph, const Edge edge){
+    if(graph == NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] GraphInsertEdge failed. Graph value is NULL.\n");
+        #endif
+        return 1;
     } 
     
-    #ifdef STD_DDS_WARNING_MSG
-    if(graph->edges[edge.v][edge.w] != NULL){
-            fprintf(stdout, "[Warning] Graph->edges[%d][%d] already has a value, overriding.\n", edge->v, edge->w);
+    if(ArrayListGetAt(ArrayListGetAt(graph->edges, edge.v), edge.w) != NULL){
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] Edge '%d-%d' is already in this Graph.\n", edge.v, edge.w);
+        #endif
+        return 1;
     }
-    #endif 
+    
 
 
     Edge *edgeP = (Edge *)malloc(sizeof(Edge));
      if(edgeP == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] Insert edge malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(Edge));
+            fprintf(stderr, "[Error] Insert edge malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(Edge));
         #endif
-        exit(1);
+        return 1;
     }
 
     edgeP->v = edge.v;
     edgeP->w = edge.w;
-
-    graph->edges[edgeP->v][edgeP->w] = edgeP;
+    
+    if(ArrayListSetAt(ArrayListGetAt(graph->edges, edge.v), edge.w, edgeP) != 0){
+        return 1;
+    }
 
     graph->eLength++;
+
+    return 0;
 }
 
-void GraphRemoveEdge(Graph *graph, Edge *edge){
+int GraphRemoveEdge(Graph *graph, Edge *edge){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] GraphRemoveEdge failed. Graph value is NULL.\n");
+            fprintf(stderr, "[Warning] GraphRemoveEdge failed. Graph value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     if(edge == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] GraphRemoveEdge failed. Edge value is NULL.\n");
+            fprintf(stderr, "[Warning] GraphRemoveEdge failed. Edge value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
-    graph->edges[edge->v][edge->w] = NULL;
+    if(ArrayListSetAt(ArrayListGetAt(graph->edges, edge->v), edge->w, NULL) != 0){
+        return 1;
+    }
 
     graph->eLength--;
     
     free(edge);
+
+    return 0;
 }
 
-Edge *GraphGetEdge(Graph *graph, Vertex v, Vertex w){
+Edge *GraphGetEdge(Graph *graph, const Vertex v, const Vertex w){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] GraphGetEdge failed. Graph value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] GraphGetEdge failed. Graph value is NULL.\n");
         #endif
         return NULL;
     }
 
     if(v > graph->vLength - 1 || w > graph->vLength - 1){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] Edge '%d-%d' is out-of-bounds for Graph with a vLength of '%d'.\n", v, w, graph->vLength);
+            fprintf(stderr, "[Warning] Edge '%d-%d' is out-of-bounds for Graph with a vLength of '%d'.\n", v, w, graph->vLength);
         #endif
         return NULL;
     }
 
-    return graph->edges[v][w];
+    return (Edge *)ArrayListGetAt(ArrayListGetAt(graph->edges, v), w);
 }
 
-void GraphFree(Graph *graph){
+int GraphFree(Graph *graph){
    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] GraphFree failed. Graph value is NULL.\n");
         #endif
-        return;
+        return 1;
     } 
 
     for(int v = 0; v < graph->vLength; v++){
+        ArrayList *vList = ArrayListGetAt(graph->edges, v);
+        if(vList == NULL){
+            return 1;
+        }
+
         for(int w = 0; w < graph->vLength; w++){
-            Edge *edge = graph->edges[v][w];
+            Edge *edge = ArrayListGetAt(vList, w);
             if(edge != NULL){
                 free(edge);
             }
         }
+
+        if(ArrayListFree(vList) != 0){
+            return 1;
+        }
     }
     
-    free(graph->edges);
-    free(graph);
-}
-
-void GraphPrint(Graph *graph){
-    if(graph == NULL){
-        #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] GraphPrint failed. Graph value is NULL.\n");
-        #endif
-        return;
+    if(ArrayListFree(graph->edges) != 0){
+        return 1;
     }
 
-    fprintf(stdout, "Graph vLength: %d\n", graph->vLength);
-    fprintf(stdout, "Graph eLength: %d\n", graph->eLength);
-    for(int v = 0; v < graph->vLength; v++){
-        for(int w = 0; w < graph->vLength; w++){
-            Edge *edge = graph->edges[v][w];
-            if(edge != NULL){
-                fprintf(stdout, "[%d]->[%d]\n", edge->v, edge->w);
-            }
-        }
-    } 
-}
+    free(graph);
 
+    return 0;
+}

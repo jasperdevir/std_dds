@@ -18,7 +18,7 @@ e_array_list: $(EXAMPLESDIR)/e_array_list.c $(OBJDIR)/array_list.o
 e_d_linked_list: $(EXAMPLESDIR)/e_d_linked_list.c $(OBJDIR)/d_linked_list.o
 	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
 
-e_graph: $(EXAMPLESDIR)/e_graph.c $(OBJDIR)/graph_adj_list.o
+e_graph: $(EXAMPLESDIR)/e_graph.c $(OBJDIR)/graph_adj_mat.o $(OBJDIR)/array_list.o
 	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
 
 e_linked_list: $(EXAMPLESDIR)/e_linked_list.c $(OBJDIR)/linked_list.o

@@ -12,9 +12,6 @@ implements of a range of basic dynamic data structures in C.
 - Graph (Adjacency List)
 - Hash Map
 
-### Data Structures Planned:
-- Tree Graph
-
 ## Contents
 
 - [Usage](#usage)

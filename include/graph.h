@@ -18,12 +18,6 @@
 #ifndef STD_DDS_GRAPH
 #define STD_DDS_GRAPH
 
-#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
-    #define STD_DDS_ERROR_MSG
-#endif
-
-#include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 typedef unsigned int Vertex;
@@ -35,17 +29,77 @@ typedef struct {
 
 typedef struct graphRep Graph;
 
-Graph *GraphInit(unsigned int vLength);
+/**
+ * Initialise and allocate memory for a Graph object with initial amount of 
+ * vertices.
+ * @param vLength The initial amount of vertices.
+ * @return A pointer to the initialised Graph.
+ * Returns NULL if initialisation failed.
+**/
+Graph *GraphInit(const size_t vLength);
 
-void GraphInsertEdge(Graph *graph, Edge edge);
-void GraphRemoveEdge(Graph *graph, Edge *edge);
-Edge *GraphGetEdge(Graph *graph, Vertex v, Vertex w);
+/**
+ * Add an amount of vertices to a Graph.
+ * @param graph The Graph to modify.
+ * @param amount The amount of vertices to add.
+ * @return 0 if successful.
+**/
+int GraphAddVertices(Graph *graph, const size_t amount);
 
-unsigned int GraphGetVLength(Graph *graph);
-unsigned int GraphGetELength(Graph *graph);
+/**
+ * Remove a Vertex and its associated edges from a Graph.
+ * @param graph The Graph to modify.
+ * @param v The Vertex to remove.
+ * @return 0 if successful.
+**/
+//int GraphRemoveVertex(Graph *graph, const Vertex v);
 
-void GraphPrint(Graph *graph);
+/**
+ * Insert a unique Edge into a Graph.
+ * @param graph The Graph to add an Edge to.
+ * @param edge The Edge to add.
+ * @return 0 if successful.
+**/
+int GraphInsertEdge(Graph *graph, const Edge edge);
 
-void GraphFree(Graph *graph);
+/**
+ * Remove an Edge from a Graph.
+ * @param graph The Graph to remove an Edge from.
+ * @param edge The Edge to remove.
+ * @return 0 if successful.
+**/
+int GraphRemoveEdge(Graph *graph, Edge *edge);
+
+/**
+ * Get an Edge from a Graph.
+ * @param graph The Graph to get an Edge from.
+ * @param v The start Vertex.
+ * @param w The end Vertex.
+ * @return The Edge from the start to the end Vertex.
+ * Returns NULL if no matching Edge is found.
+**/
+Edge *GraphGetEdge(Graph *graph, const Vertex v, const Vertex w);
+
+/**
+ * Get the current amount of vertices in a Graph.
+ * @param list The Graph to query.
+ * @return The Graph's Vertex length.
+**/
+size_t GraphGetVLength(const Graph *graph);
+
+/**
+ * Get the current amount of edges in a Graph.
+ * @param list The Graph to query.
+ * @return The Graph's Edge length.
+**/
+size_t GraphGetELength(const Graph *graph);
+
+
+/**
+ * Free the memory allocated for a Graph object and its edges.
+ * @param The Graph to free.
+ * @return 0 if successful.
+**/
+int GraphFree(Graph *graph);
 
 #endif // STD_DDS_GRAPH

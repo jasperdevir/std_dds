@@ -18,29 +18,66 @@
 #ifndef STD_DDS_HASH_MAP
 #define STD_DDS_HASH_MAP
 
-#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
-    #define STD_DDS_ERROR_MSG
-#endif
-
-#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
-    #include <stdio.h>
-#endif
 #include <stdlib.h>
-#include <string.h>
-
-#define STD_DDS_MAX_KEY 256
 
 typedef struct hashMap HashMap;
 
-HashMap *HashMapInit(const unsigned int bCapacity);
+/**
+ * Initialise and allocate memory for a HashMap object with the capacity
+ * of its primary bucket array.
+ * @param capacity The capacity of its primary bucket array.
+ * @return A pointer to the initialised HashMap.
+ * Returns NULL if initialisation failed.
+**/
+HashMap *HashMapInit(const size_t bCapacity);
 
+/**
+ * Get a value at a specified key in a HashMap.
+ * @param map The HashMap to get the element from.
+ * @param key The key of the element to get.
+ * @return A pointer to the value of an element at the specified key. 
+ * Returns NULL if out-of-bounds. 
+**/
 void *HashMapGet(const HashMap *map, const char *key); 
-void HashMapSet(HashMap *map, const char *key, void *value);
+
+/**
+ * Set the value of an element at a specified key in a HashMap.
+ * @param map The HashMap to add with the element to set.
+ * @param key The key of the element to set.
+ * @param value The value to set the element.
+ * @return 0 if successful.
+**/
+int HashMapSet(HashMap *map, const char *key, void *value);
+
+/**
+ * Remove an element at a specified key from a HashMap.
+ * @param map The HashMap to remove an element from.
+ * @param key The key of the element to remove.
+ * @return A pointer to the value of the element removed.
+ * Returns NULL if out-of-bounds.
+**/
 void *HashMapRemove(HashMap *map, const char *key);
 
-unsigned int HashMapGetCount(const HashMap *map);
-unsigned int HashMapGetBCapacity(const HashMap *map);
+/**
+ * Get the current amount of elements in a HashMap.
+ * @param map The HashMap to query.
+ * @return The HashMap's count.
+**/
+size_t HashMapGetCount(const HashMap *map);
 
-void HashMapFree(HashMap *map);
+/**
+ * Get the capacity of the primary bucket array of a HashMap.
+ * @param map the HashMap to query.
+ * @return The HashMap's primary array capacity.
+**/
+size_t HashMapGetBCapacity(const HashMap *map);
+
+/**
+ * Free the memory allocated for an HashMap object and its elements.
+ * DOES NOT free the memory of each element's value.
+ * @param The HashMap to free.
+ * @return 0 if successful.
+**/ 
+int HashMapFree(HashMap *map);
 
 #endif // STD_DDS_HASH_MAP

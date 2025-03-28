@@ -31,3 +31,4 @@ E.g.
 #include "stack.h"
 #include "queue.h"
 #include "hash_map.h"
+#include "graph.h"

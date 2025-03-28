@@ -17,19 +17,27 @@
 
 #include "linked_list.h"
 
+#if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
+    #define STD_DDS_ERROR_MSG
+#endif
+
+#if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
+    #include <stdio.h>
+#endif
+
 typedef struct linkedList {
     LinkedNode *head;
     LinkedNode *tail;
-    unsigned int length;
+    size_t length;
 } LinkedList;
 
 LinkedNode *LinkedNodeInit(void *value){
     LinkedNode *node = (LinkedNode *)malloc(sizeof(LinkedNode));
     if(node == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] LinkedNode malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(LinkedNode));
+            fprintf(stderr, "[Error] LinkedNode malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(LinkedNode));
         #endif
-        exit(1);
+        return NULL;
     }
 
     node->value = value;
@@ -42,9 +50,9 @@ LinkedList *LinkedListInit(){
     LinkedList *list = (LinkedList *)malloc(sizeof(LinkedList));
     if(list == NULL){
         #ifdef STD_DDS_ERROR_MSG
-            fprintf(stderr, "[Error] LinkedList malloc failed. Unable to allocate memory of %zu bytes. Exiting.\n", sizeof(LinkedList));
+            fprintf(stderr, "[Error] LinkedList malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(LinkedList));
         #endif
-        exit(1);
+        return NULL;
     }
 
     list->head = NULL;
@@ -54,15 +62,18 @@ LinkedList *LinkedListInit(){
     return list;
 }
 
-void LinkedListPush(LinkedList *list, void *value){
+int LinkedListPush(LinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListPush failed. LinkedList value is NULL.\n");
+            fprintf(stderr, "[Warning] LinkedListPush failed. LinkedList value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     LinkedNode *node = LinkedNodeInit(value);
+    if(node == NULL){
+        return 1;
+    }
     
     if(list->head != NULL){
         node->next = list->head;
@@ -75,17 +86,22 @@ void LinkedListPush(LinkedList *list, void *value){
     }
 
     list->length++;
+
+    return 0;
 }
 
-void LinkedListAppend(LinkedList *list, void *value){
+int LinkedListAppend(LinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListAppend failed. LinkedList value is NULL.\n");
+            fprintf(stderr, "[Warning] LinkedListAppend failed. LinkedList value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     LinkedNode *node = LinkedNodeInit(value);
+    if(node == NULL){
+        return 1;
+    }
 
     if(list->tail != NULL){
         list->tail->next = node;
@@ -98,12 +114,14 @@ void LinkedListAppend(LinkedList *list, void *value){
     }
 
     list->length++;
+
+    return 0;
 }
 
 void *LinkedListPop(LinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListPop failed. LinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] LinkedListPop failed. LinkedList value is NULL.\n");
         #endif
         return NULL;
     }
@@ -112,7 +130,7 @@ void *LinkedListPop(LinkedList *list){
 
     if(currHead == NULL || list->length < 1){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] Unable to pop element from LinkedList as its current length is 0. Returning NULL.\n");
+            fprintf(stderr, "[Warning] Unable to pop element from LinkedList as its current length is 0.\n");
         #endif
         return NULL;
     }
@@ -134,7 +152,7 @@ void *LinkedListPop(LinkedList *list){
 void *LinkedListPopTail(LinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListPopTail failed. LinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] LinkedListPopTail failed. LinkedList value is NULL.\n");
         #endif
         return NULL;
     }
@@ -143,7 +161,7 @@ void *LinkedListPopTail(LinkedList *list){
 
     if(currTail == NULL || list->length < 1){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] Unable to pop tail element from LinkedList as its current length is 0. Returning NULL.\n");
+            fprintf(stderr, "[Warning] Unable to pop tail element from LinkedList as its current length is 0.\n");
         #endif
         return NULL;
     }
@@ -174,10 +192,10 @@ void *LinkedListPopTail(LinkedList *list){
 
 }
 
-unsigned int LinkedListGetLength(LinkedList *list){
+size_t LinkedListGetLength(const LinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListGetLength failed. LinkedList value is NULL. Returning 0.\n");
+            fprintf(stderr, "[Warning] LinkedListGetLength failed. LinkedList value is NULL.\n");
         #endif
         return 0;
     }
@@ -185,10 +203,10 @@ unsigned int LinkedListGetLength(LinkedList *list){
     return list->length;
 }
 
-LinkedNode *LinkedListGetHead(LinkedList *list){
+LinkedNode *LinkedListGetHead(const LinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListGetHead failed. LinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] LinkedListGetHead failed. LinkedList value is NULL.\n");
         #endif
         return NULL;
     }
@@ -196,10 +214,10 @@ LinkedNode *LinkedListGetHead(LinkedList *list){
     return list->head;
 }
 
-LinkedNode *LinkedListGetTail(LinkedList *list){
+LinkedNode *LinkedListGetTail(const LinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListGetTail failed. LinkedList value is NULL. Returning NULL.\n");
+            fprintf(stderr, "[Warning] LinkedListGetTail failed. LinkedList value is NULL.\n");
         #endif
         return NULL;
     }
@@ -207,12 +225,12 @@ LinkedNode *LinkedListGetTail(LinkedList *list){
     return list->tail;
 }
 
-void LinkedListFree(LinkedList *list){
+int LinkedListFree(LinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
-            fprintf(stdout, "[Warning] LinkedListFree failed. LinkedList value is NULL.\n");
+            fprintf(stderr, "[Warning] LinkedListFree failed. LinkedList value is NULL.\n");
         #endif
-        return;
+        return 1;
     }
 
     LinkedNode *node = list->head;
@@ -221,4 +239,6 @@ void LinkedListFree(LinkedList *list){
         free(node);
         node = next;
     }
+
+    return 0;
 }
