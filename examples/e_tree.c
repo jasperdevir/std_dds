@@ -14,8 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
-#include "std_dds_core.h"
-#define STD_DDS_ERROR_MSG
+#include "std_dds_utils.h"
 #include "tree.h"
 
 #include <stdio.h>
@@ -83,15 +82,16 @@ int main(void){
 
     printf("\n-- TreeNodeInit() --\n");
 
-    printf("Initialising trees.\n");
-
     const char *rootKey = "html";
+    printf("Initialising a TreeNode with key '%s'.\n", rootKey);    
     TreeNode *tree = TreeNodeInit(rootKey, NULL);
     if(tree == NULL){
         printf("TreeNodeInit() failed. Exiting.\n");
         return 1;
     }
+
     const char *bodyKey = "body";
+    printf("Initialising a TreeNode with key '%s'.\n", bodyKey);
     TreeNode *body = TreeNodeInit(bodyKey, NULL); 
     if(body == NULL){
         printf("TreeNodeInit() failed. Exiting.\n");
@@ -100,13 +100,16 @@ int main(void){
 
     printf("\n-- TreeNodeAddNode() --\n");
 
+    printf("Adding child to '%s' with key '%s'.\n", rootKey, bodyKey);
     result = TreeNodeAddNode(tree, body);
     if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Adding child to '%s' with key '%s' was unsuccessful. Exiting.\n", rootKey, bodyKey);
         return 1;
     }
 
+    printf("\nResult:\n");
     PrintHTMLTree(tree, 0);
-
     
     printf("\n--TreeNodeAdd() --\n");
 
@@ -159,7 +162,7 @@ int main(void){
         return 1;
     } 
 
-    printf("Result:\n");
+    printf("\nResult:\n");
     PrintHTMLTree(tree, 0);
 
     TreeNode *nodeResult;
@@ -174,7 +177,7 @@ int main(void){
         return 1;
     } else {
         value = TreeNodeGetKey(nodeResult);
-        printf("Succesfully removed key '%s' with value '%s' from Tree.\n", keyD, (char *)value);
+        printf("Successfully removed key '%s' with value '%s' from Tree.\n", keyD, (char *)value);
         free(nodeResult);
     }
 
@@ -187,7 +190,7 @@ int main(void){
         return 1;
     } else {
         value = TreeNodeGetValue(nodeResult);
-        printf("Succesfully removed key '%s' with value '%s' from '%s'.\n", keyC, (char *)value, bodyKey);
+        printf("Successfully removed key '%s' with value '%s' from '%s'.\n", keyC, (char *)value, bodyKey);
         free(nodeResult);
     }
 
@@ -197,14 +200,14 @@ int main(void){
 
     printf("\n-- TreeGet() --\n");
 
-    printf("Getting '%s' from the Tree.\n", keyE);
-    nodeResult = TreeGet(tree, keyE);
+    printf("Getting '%s' from the Tree.\n", keyF);
+    nodeResult = TreeGet(tree, keyF);
     if(nodeResult == NULL){
-        printf("Getting key '%s' from Tree was unsuccessful. Exiting.\n", keyE); 
+        printf("Getting key '%s' from Tree was unsuccessful. Exiting.\n", keyF); 
         return 1;
     } else {
         value = TreeNodeGetValue(nodeResult);
-        printf("Succesfully retrieved key '%s' with value '%s' from Tree.\n", keyE, (char *)value);
+        printf("Successfully retrieved key '%s' with value '%s' from Tree.\n", keyF, (char *)value);
     }
 
     printf("\n-- TreeNodeGet() --\n");
@@ -212,11 +215,11 @@ int main(void){
     printf("Get '%s' from '%s'.\n", keyA, bodyKey);
     nodeResult = TreeNodeGet(body, keyA);
     if(nodeResult == NULL){
-        printf("Geting key '%s' from '%s' was unsuccessful. Exiting.\n", keyA, bodyKey); 
+        printf("Getting key '%s' from '%s' was unsuccessful. Exiting.\n", keyA, bodyKey); 
         return 1;
     } else {
         value = TreeNodeGetValue(nodeResult);
-        printf("Succesfully retrieved key '%s' with value '%s' from '%s'.\n", keyA, (char *)value, bodyKey);
+        printf("Successfully retrieved key '%s' with value '%s' from '%s'.\n", keyA, (char *)value, bodyKey);
     }
 
     printf("\n-- TreeFree() --\n");

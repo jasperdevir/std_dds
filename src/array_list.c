@@ -14,10 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-#define STD_DDS_WARNING_MSG
-#define STD_DDS_ERROR_MSG
-
 #include "array_list.h"
 #include "std_dds_core.h"
 
@@ -185,13 +181,9 @@ STD_DDS_RESULT ArrayListAppend(ArrayList *list, void *value) {
         }
     }
 
-    printf("Length Before: %zu\n", list->length);
-
     list->values[list->length] = value;
 
     list->length++;
-
-    printf("Length After: %zu\n", list->length);
 
     return STD_DDS_SUCCESS;
 }

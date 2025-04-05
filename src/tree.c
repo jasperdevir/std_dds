@@ -19,9 +19,6 @@
 #include "array_list.h"
 #include "std_dds_core.h"
 
-#define STD_DDS_WARNING_MSG
-#define STD_DDS_ERROR_MSG
-
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
 #endif
@@ -46,9 +43,7 @@ TreeNode *TreeNodeInit(const char *key, void *value){
         #endif
         return NULL;
     }
-
-    printf("Key Init: '%s'\n", key);
-    
+ 
     node->key = malloc(sizeof(char) * strlen(key) + 1);
     if(node->key == NULL){
         #ifdef STD_DDS_ERROR_MSG
@@ -170,8 +165,6 @@ TreeNode *treeRemoveSearch(TreeNode *parent, const char *key){
             continue;
         }
         
-        printf("testing %s - %s\n", child->key, key);
-
         if(strcmp(key, child->key) == 0){
             return (TreeNode *)ArrayListRemoveAt(children, i);
         }

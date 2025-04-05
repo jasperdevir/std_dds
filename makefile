@@ -7,10 +7,7 @@ BINDIR := ./bin
 
 .PHONY: all mkbin clean
 
-all: mkdir e_array_list e_d_linked_list e_graph e_linked_list e_queue e_stack e_hash_map e_tree e_b_search_tree
-
-mkbin:
-	mkdir -p $(BINDIR) $(OBJDIR)
+all: e_array_list e_d_linked_list e_graph e_linked_list e_queue e_stack e_hash_map e_tree e_b_search_tree
 
 e_array_list: $(EXAMPLESDIR)/e_array_list.c $(OBJDIR)/array_list.o
 	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
@@ -33,7 +30,7 @@ e_stack: $(EXAMPLESDIR)/e_stack.c $(OBJDIR)/stack.o $(OBJDIR)/linked_list.o
 e_hash_map: $(EXAMPLESDIR)/e_hash_map.c $(OBJDIR)/hash_map.o
 	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
 
-e_tree: $(EXAMPLESDIR)/e_tree.c $(OBJDIR)/tree.o $(OBJDIR)/array_list.o
+e_tree: $(EXAMPLESDIR)/e_tree.c $(OBJDIR)/tree.o $(OBJDIR)/array_list.o $(OBJDIR)/std_dds_utils.o
 	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
 
 e_b_search_tree: $(EXAMPLESDIR)/e_b_search_tree.c $(OBJDIR)/b_search_tree.o
@@ -67,6 +64,9 @@ $(OBJDIR)/tree.o: $(SRCDIR)/tree.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 $(OBJDIR)/b_search_tree.o: $(SRCDIR)/b_search_tree.c
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+$(OBJDIR)/std_dds_utils.o: $(SRCDIR)/std_dds_utils.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 clean:
