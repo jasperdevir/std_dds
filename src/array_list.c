@@ -67,7 +67,7 @@ STD_DDS_RESULT ArrayListResize(ArrayList *list, const size_t capacity) {
         return STD_DDS_NULL_PARAM;
     }
 
-    void *values = (void *)realloc(list->values, sizeof(void *) * capacity);
+    void **values = realloc(list->values, sizeof(void *) * capacity);
     if (values == NULL) {
         #ifdef STD_DDS_ERROR_MSG
             fprintf(stderr,"[Error] ArrayList values realloc failed. Unable to reallocate memory of %zu bytes.\n", sizeof(void *) * capacity);
@@ -160,16 +160,12 @@ STD_DDS_RESULT ArrayListPush(ArrayList *list, void *value) {
         }
     }
 
-    printf("Length Before: %zu\n", list->length);
-
     for (int i = list->length - 1; i >= 0; i--) {
         list->values[i + 1] = list->values[i];
     }
 
     list->values[0] = value;
     list->length++;
-
-    printf("Length After: %zu\n", list->length);
 
     return STD_DDS_SUCCESS;
 }
@@ -263,7 +259,7 @@ void *ArrayListRemoveAt(ArrayList *list, const int index) {
     void *value = list->values[index];
 
     for (unsigned int i = index; i < list->length - 1; i++) {
-        list->values[index] = list->values[index + 1];
+        list->values[i] = list->values[i + 1];
     }
 
     list->length--;

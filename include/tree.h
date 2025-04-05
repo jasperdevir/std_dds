@@ -29,7 +29,7 @@ TreeNode *TreeNodeGet(const TreeNode *parent, const char *key);
 TreeNode *TreeGet(const TreeNode *tree, const char *key);
 
 TreeNode *TreeNodeAdd(TreeNode *parent, const char *key, void *value);
-STD_DDS_RESULT TreeNodeAddNode(TreeNode *parent, const TreeNode *child);
+STD_DDS_RESULT TreeNodeAddNode(TreeNode *parent, TreeNode *child);
 
 TreeNode *TreeNodeRemove(TreeNode *parent, const char *key);
 TreeNode *TreeRemove(TreeNode *tree, const char *key);

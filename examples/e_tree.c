@@ -24,7 +24,6 @@
 
 void PrintHTMLTree(TreeNode *node, int indent){
     if(node == NULL){
-        printf("NODE IS NULL\n");
         return;
     }
 
@@ -42,30 +41,26 @@ void PrintHTMLTree(TreeNode *node, int indent){
 
     char *key = TreeNodeGetKey(node);
     if(key == NULL){
-        printf("KEY IS NULL\n");
-    } else {
-        printf("%s<%s> ", indentStr, key);
-        void *value = TreeNodeGetValue(node);
-        if(value != NULL){
-            printf("%s\n", (char *)value);
-        } else {
-            printf("\n");
-        }
+        return;
     }
+
+    printf("%s<%s>\n", indentStr, key);
+
+    void *value = TreeNodeGetValue(node);
+    if(value != NULL){
+        printf("%s%s\n", indentStr, (char *)value);
+    } 
     
     ArrayList *children = TreeNodeGetChildren(node);
     if(children != NULL){
-        printf("Children Length: %zu\n", ArrayListGetLength(children));
         for(i = 0; i < ArrayListGetLength(children); i++){
-            TreeNode *child = (TreeNode *)ArrayListGetAt(children, i);
+            TreeNode *child = ArrayListGetAt(children, i);
             if(child != NULL){
                 PrintHTMLTree(child, indent + 2);
             }
         }
-    } else {
-        printf("NO CHILDREN\n");
     }
-    
+
     printf("%s</%s>\n", indentStr, key);
 
     free(indentStr);
@@ -78,11 +73,7 @@ char *HeapStr(const char *str){
         return NULL;
     }
 
-    for(size_t i = 0; i < len; i++){
-        heapStr[i] = str[i];
-    }
-
-    return heapStr;
+    return strcpy(heapStr, str); 
 }
 
 int main(void){
@@ -91,7 +82,9 @@ int main(void){
     printf("\n== std_dds Tree Example ==\n");
 
     printf("\n-- TreeNodeInit() --\n");
+
     printf("Initialising trees.\n");
+
     const char *rootKey = "html";
     TreeNode *tree = TreeNodeInit(rootKey, NULL);
     if(tree == NULL){
@@ -107,20 +100,21 @@ int main(void){
 
     printf("\n-- TreeNodeAddNode() --\n");
 
-    printf("Adding child '%s' to '%s'.\n", bodyKey, rootKey);
     result = TreeNodeAddNode(tree, body);
     if(result != STD_DDS_SUCCESS){
-        printf("Adding child '%s' to '%s' failed. Exiting [%d]\n", bodyKey, rootKey, result);
         return 1;
     }
 
+    PrintHTMLTree(tree, 0);
+
+    
     printf("\n--TreeNodeAdd() --\n");
 
     const char *keyA = "h1";
-    char *textA = HeapStr("Hello"); 
+    char *textA = HeapStr("Hello World"); 
     printf("Adding child to '%s' with key '%s' and value '%s'.\n", bodyKey, keyA, textA);
     if(TreeNodeAdd(body, keyA, textA) == NULL){
-        printf("Adding child '%s' to '%s' failed. Exiting\n", keyA, bodyKey);
+        printf("Adding child '%s' to '%s' failed. Exiting.\n", keyA, bodyKey);
         return 1;
     }
 
@@ -128,42 +122,42 @@ int main(void){
     char *textB = HeapStr("Subtitle");
     printf("Adding child to '%s' with key '%s' and value '%s'.\n", bodyKey, keyB, textB);
      if(TreeNodeAdd(body, keyB, textB) == NULL){
-        printf("Adding child '%s' to '%s' failed. Exiting\n", keyB, bodyKey);
+        printf("Adding child '%s' to '%s' failed. Exiting.\n", keyB, bodyKey);
         return 1;
     }
 
     const char *keyC = "h5";
-    char *textC = HeapStr("Author");
+    char *textC = HeapStr("Author Name");
     printf("Adding child to '%s' with key '%s' and value '%s'.\n", bodyKey, keyC, textC);
      if(TreeNodeAdd(body, keyC, textC) == NULL){
-        printf("Adding child '%s' to '%s' failed. Exiting\n", keyC, bodyKey);
+        printf("Adding child '%s' to '%s' failed. Exiting.\n", keyC, bodyKey);
         return 1;
     }
 
     const char *keyD = "p";
-    char *textD = HeapStr("Welcome to my page! Here is a link: ");
+    char *textD = HeapStr("Welcome to my page!");
     printf("Adding child to '%s' with key '%s' and value '%s'.\n", bodyKey, keyD, textD);
-    TreeNode *p = TreeNodeAdd(body, keyD, textD);
+    if(TreeNodeAdd(body, keyD, textD) == NULL){
+        printf("Adding child '%s' to '%s' failed. Exiting.\n", keyD, bodyKey);
+        return 1;
+    }
+
+    const char *keyE = "p";
+    char *textE = HeapStr("Here is a link: ");
+    printf("Adding child to '%s' with key '%s' and value '%s'.\n", bodyKey, keyE, textE);
+    TreeNode *p = TreeNodeAdd(body, keyE, textE);
     if(p == NULL) {
-        printf("Adding child '%s' to '%s' failed. Exiting\n", keyD, bodyKey);
+        printf("Adding child '%s' to '%s' failed. Exiting.\n", keyE, bodyKey);
         return 1;
     }
 
-    const char *keyE = "a";
-    char *textE = HeapStr("www.google.com");
-    printf("Adding child to '%s' with key '%s' and value '%s'.\n", keyD, keyE, textE);
-    if(TreeNodeAdd(body, keyE, textE) == NULL){
-        printf("Adding child '%s' to '%s' failed. Exiting\n", keyE, keyE);
+    const char *keyF = "a";
+    char *textF = HeapStr("www.google.com");
+    printf("Adding child to '%s' with key '%s' and value '%s'.\n", keyE, keyF, textF);
+    if(TreeNodeAdd(p, keyF, textF) == NULL){
+        printf("Adding child '%s' to '%s' failed. Exiting.\n", keyF, keyE);
         return 1;
-    }
-
-    const char *keyF = "p";
-    char *textF = HeapStr("Goodbye for now!");
-    printf("Adding child to '%s' with key '%s' and value '%s'.\n", bodyKey, keyF, textF);
-    if(TreeNodeAdd(body, keyF, textF) == NULL){
-        printf("Adding child '%s' to '%s' failed. Exiting\n", keyF, bodyKey);
-        return 1;
-    }
+    } 
 
     printf("Result:\n");
     PrintHTMLTree(tree, 0);
@@ -196,6 +190,9 @@ int main(void){
         printf("Succesfully removed key '%s' with value '%s' from '%s'.\n", keyC, (char *)value, bodyKey);
         free(nodeResult);
     }
+
+    printf("\nResult:\n");
+    PrintHTMLTree(tree, 0);
     
 
     printf("\n-- TreeGet() --\n");
@@ -226,6 +223,13 @@ int main(void){
 
     printf("Freeing the Tree.\n");
     TreeFree(tree);
+    
+    free(textA);
+    free(textB);
+    free(textC);
+    free(textD);
+    free(textE);
+    free(textF);
 
     return 0;
 }

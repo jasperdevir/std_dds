@@ -59,7 +59,6 @@ TreeNode *TreeNodeInit(const char *key, void *value){
     }
     strcpy(node->key, key);
 
-    printf("Key Result: '%s'\n", node->key);
     node->value = value;
     node->children = ArrayListInit(4); 
     if(node->children == NULL){
@@ -67,8 +66,6 @@ TreeNode *TreeNodeInit(const char *key, void *value){
         free(node);
         return NULL;
     }
-    printf("Children Length: %zu\n", ArrayListGetLength(node->children));
-    printf("Children Capacity: %zu\n", ArrayListGetCapacity(node->children));
 
     return node;
 }
@@ -149,15 +146,15 @@ TreeNode *TreeNodeAdd(TreeNode *parent, const char *key, void *value){
     return node;
 }
 
-STD_DDS_RESULT TreeNodeAddNode(TreeNode *parent, const TreeNode *child){
-    if (parent == NULL) {
+STD_DDS_RESULT TreeNodeAddNode(TreeNode *parent, TreeNode *child){
+    if (parent == NULL || child == NULL) {
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] TreeNodeAddNode failed. TreeNode value is NULL.\n");
         #endif
         return STD_DDS_NULL_PARAM;
     } 
 
-    return ArrayListAppend(parent->children, &child);
+    return ArrayListAppend(parent->children, child);
 }
 
 TreeNode *treeRemoveSearch(TreeNode *parent, const char *key){

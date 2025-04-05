@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Werror -ggdb -fsanitize=address -std=c11 -I./include
+CFLAGS := -Wall -Werror -std=c11 -I./include
 SRCDIR := ./src
 EXAMPLESDIR := ./examples
 OBJDIR := ./obj
@@ -7,7 +7,7 @@ BINDIR := ./bin
 
 .PHONY: all mkbin clean
 
-all: mkbin e_array_list e_d_linked_list e_graph e_linked_list e_queue e_stack e_hash_map e_tree e_b_search_tree
+all: mkdir e_array_list e_d_linked_list e_graph e_linked_list e_queue e_stack e_hash_map e_tree e_b_search_tree
 
 mkbin:
 	mkdir -p $(BINDIR) $(OBJDIR)
