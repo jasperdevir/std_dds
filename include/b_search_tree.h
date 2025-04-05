@@ -20,6 +20,8 @@
 
 #include "std_dds_core.h"
 
+#include <stddef.h>
+
 typedef struct bSTreeNode {
     int value;
     struct bSTreeNode *left;
@@ -36,6 +38,10 @@ STD_DDS_RESULT BSTreeRemove(BSTreeNode *tree, const int value);
 
 BSTreeNode *BSTreeJoin(BSTreeNode *left, BSTreeNode *right);
 
-STD_DDS_RESULT BTreeFree(BSTreeNode *tree);
+size_t BSTreeGetHeight(const BSTreeNode *tree);
+
+size_t BSTreeGetMaxWidth(const BSTreeNode *tree);
+
+STD_DDS_RESULT BSTreeFree(BSTreeNode *tree);
 
 #endif // STD_DDS_B_SEARCH_TREE_H

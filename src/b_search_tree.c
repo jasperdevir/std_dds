@@ -185,6 +185,70 @@ STD_DDS_RESULT BSTreeRemove(BSTreeNode *tree, const int value){
     return STD_DDS_SUCCESS;
 }
 
+size_t bSTreeGetHeight(const BSTreeNode *node){
+    if(node == NULL){
+        return 0;
+    }
+
+    size_t leftHeight = bSTreeGetHeight(node->left);
+
+    size_t rightHeight = bSTreeGetHeight(node->right);
+
+    if(leftHeight > rightHeight){
+        return leftHeight + 1;
+    } else {
+        return rightHeight + 1;
+    }
+}
+
+size_t BSTreeGetHeight(const BSTreeNode *tree){
+    if (tree == NULL) {
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] BSTreeGetHeight failed. BSTreeNode value is NULL.\n");
+        #endif
+        return -1;
+    }
+
+    return bSTreeGetHeight(tree);
+}
+
+size_t bSTreeGetWidth(const BSTreeNode *node, int level){
+    if(node == NULL){
+        return 0;
+    }
+
+    if(level == 1){
+        return 1;
+    }
+
+    if(level > 1){
+        return bSTreeGetWidth(node->left, level - 1) + bSTreeGetWidth(node->right, level - 1);
+    }
+
+    return 0;
+}
+
+size_t BSTreeGetMaxWidth(const BSTreeNode *tree){
+    if (tree == NULL) {
+        #ifdef STD_DDS_WARNING_MSG
+            fprintf(stderr, "[Warning] BSTreeGetMaxWidth failed. BSTreeNode value is NULL.\n");
+        #endif
+        return -1;
+    }
+
+    size_t maxWidth = 0;
+    size_t width, height = BSTreeGetHeight(tree);
+
+    for(int i = 0; i <= height; i++){
+        width = bSTreeGetWidth(tree, i);
+        if(width > maxWidth){
+            maxWidth = width;
+        }
+    }
+
+    return maxWidth;
+}
+
 void bSTreeFree(BSTreeNode *tree){
     if(tree == NULL){
         return;
