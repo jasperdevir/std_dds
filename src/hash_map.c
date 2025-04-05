@@ -16,6 +16,7 @@
 */
 
 #include "hash_map.h"
+#include "std_dds_core.h"
 
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
@@ -26,8 +27,6 @@
     #include <stdio.h>
 #endif
 #include <string.h>
-
-#define STD_DDS_MAX_KEY 256
 
 typedef struct hashBucket { 
     void *value;
@@ -127,19 +126,19 @@ void *HashMapGet(const HashMap *hashMap, const char *key){
     return NULL;
 }
 
-int HashMapSet(HashMap *hashMap, const char *key, void *value){
+STD_DDS_RESULT HashMapSet(HashMap *hashMap, const char *key, void *value){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] HashMapSet failed. HashMap value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     if(key == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] HashMapSet failed. Key value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     unsigned int index = hash(key) % hashMap->bCapacity;
@@ -162,7 +161,7 @@ int HashMapSet(HashMap *hashMap, const char *key, void *value){
         
     hashMap->count++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
 void *HashMapRemove(HashMap *hashMap, const char *key){
@@ -226,7 +225,7 @@ size_t HashMapGetCount(const HashMap *hashMap){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] HashMapGetLength failed. HashMap value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     }
 
     return hashMap->count;
@@ -237,18 +236,18 @@ size_t HashMapGetBCapacity(const HashMap *hashMap){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] HashMapGetCapacity failed. HashMap value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     }
 
     return hashMap->bCapacity;
 }
 
-int HashMapFree(HashMap *hashMap){
+STD_DDS_RESULT HashMapFree(HashMap *hashMap){
     if(hashMap == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] HashMapFree failed. HashMap value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
     
     for(int i = 0; i < hashMap->bCapacity; i++){
@@ -264,5 +263,5 @@ int HashMapFree(HashMap *hashMap){
 
     free(hashMap);
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }

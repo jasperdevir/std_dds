@@ -15,19 +15,11 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef STD_DDS_H
-#define STD_DDS_H
+#ifndef STD_DDS_UTILS
+#define STD_DDS_UTILS
 
 #include "std_dds_core.h"
 
-#include "array_list.h"
-#include "linked_list.h"
-#include "d_linked_list.h"
-#include "stack.h"
-#include "queue.h"
-#include "hash_map.h"
-#include "graph.h"
-#include "tree.h"
-#include "b_search_tree.h"
+void PrintResultCode(STD_DDS_RESULT result);
 
-#endif // STD_DDS_H
+#endif // STD_DDS_UTILS

@@ -15,12 +15,13 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef STD_DDS_STACK
-#define STD_DDS_STACK
+#ifndef STD_DDS_STACK_H
+#define STD_DDS_STACK_H
 
-#include <stdlib.h>
-
+#include "std_dds_core.h"
 #include "linked_list.h"
+
+#include <stddef.h>
 
 typedef struct stack Stack;
 
@@ -37,7 +38,7 @@ Stack *StackInit();
  * @param value A pointer to the element to push onto the Stack.
  * @return 0 if successful.
 **/
-int StackPush(Stack *stack, void *value);
+STD_DDS_RESULT StackPush(Stack *stack, void *value);
 
 /**
  * Remove an element from the top of the Stack.
@@ -68,6 +69,6 @@ LinkedNode *StackGetHead(const Stack *stack);
  * @param The Stack to free.
  * @return 0 if successful.
 **/
-int StackFree(Stack *stack);
+STD_DDS_RESULT StackFree(Stack *stack);
 
-#endif // STD_DDS_STACK
+#endif // STD_DDS_STACK_H

@@ -16,6 +16,7 @@
  */
 
 #include "queue.h"
+#include "std_dds_core.h"
 
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
@@ -48,17 +49,17 @@ Queue *QueueInit() {
     return queue;
 }
 
-int QueueEnqueue(Queue *queue, void *value) {
+STD_DDS_RESULT QueueEnqueue(Queue *queue, void *value) {
     if (queue == NULL) {
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] QueueEnqueue failed. Queue value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     DLinkedNode *node = DLinkedNodeInit(value);
     if(node == NULL){
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
 
     if (queue->tail != NULL) {
@@ -74,7 +75,7 @@ int QueueEnqueue(Queue *queue, void *value) {
 
     queue->length++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
 void *QueueDequeue(Queue *queue) {
@@ -117,7 +118,7 @@ size_t QueueGetLength(const Queue *queue) {
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] QueueGetLength failed. Queue value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     }
 
     return queue->length;
@@ -145,12 +146,12 @@ DLinkedNode *QueueGetTail(const Queue *queue) {
     return queue->tail;
 }
 
-int QueueFree(Queue *queue) {
+STD_DDS_RESULT QueueFree(Queue *queue) {
     if (queue == NULL) {
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] QueueFree failed. Queue value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     DLinkedNode *node = queue->head;

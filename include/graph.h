@@ -15,10 +15,12 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef STD_DDS_GRAPH
-#define STD_DDS_GRAPH
+#ifndef STD_DDS_GRAPH_H
+#define STD_DDS_GRAPH_H
 
-#include <stdlib.h>
+#include "std_dds_core.h"
+
+#include <stddef.h>
 
 typedef unsigned int Vertex;
 
@@ -44,7 +46,7 @@ Graph *GraphInit(const size_t vLength);
  * @param amount The amount of vertices to add.
  * @return 0 if successful.
 **/
-int GraphAddVertices(Graph *graph, const size_t amount);
+STD_DDS_RESULT GraphAddVertices(Graph *graph, const size_t amount);
 
 /**
  * Remove a Vertex and its associated edges from a Graph.
@@ -60,7 +62,7 @@ int GraphAddVertices(Graph *graph, const size_t amount);
  * @param edge The Edge to add.
  * @return 0 if successful.
 **/
-int GraphInsertEdge(Graph *graph, const Edge edge);
+STD_DDS_RESULT GraphInsertEdge(Graph *graph, const Edge edge);
 
 /**
  * Remove an Edge from a Graph.
@@ -68,7 +70,7 @@ int GraphInsertEdge(Graph *graph, const Edge edge);
  * @param edge The Edge to remove.
  * @return 0 if successful.
 **/
-int GraphRemoveEdge(Graph *graph, Edge *edge);
+STD_DDS_RESULT GraphRemoveEdge(Graph *graph, Edge *edge);
 
 /**
  * Get an Edge from a Graph.
@@ -100,6 +102,6 @@ size_t GraphGetELength(const Graph *graph);
  * @param The Graph to free.
  * @return 0 if successful.
 **/
-int GraphFree(Graph *graph);
+STD_DDS_RESULT GraphFree(Graph *graph);
 
-#endif // STD_DDS_GRAPH
+#endif // STD_DDS_GRAPH_H

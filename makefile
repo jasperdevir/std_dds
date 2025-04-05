@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Werror -std=c11 -I./include
+CFLAGS := -Wall -Werror -ggdb -fsanitize=address -std=c11 -I./include
 SRCDIR := ./src
 EXAMPLESDIR := ./examples
 OBJDIR := ./obj
@@ -7,7 +7,7 @@ BINDIR := ./bin
 
 .PHONY: all mkbin clean
 
-all: mkbin e_array_list e_d_linked_list e_graph e_linked_list e_queue e_stack e_hash_map
+all: mkbin e_array_list e_d_linked_list e_graph e_linked_list e_queue e_stack e_hash_map e_tree e_b_search_tree
 
 mkbin:
 	mkdir -p $(BINDIR) $(OBJDIR)
@@ -33,6 +33,12 @@ e_stack: $(EXAMPLESDIR)/e_stack.c $(OBJDIR)/stack.o $(OBJDIR)/linked_list.o
 e_hash_map: $(EXAMPLESDIR)/e_hash_map.c $(OBJDIR)/hash_map.o
 	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
 
+e_tree: $(EXAMPLESDIR)/e_tree.c $(OBJDIR)/tree.o $(OBJDIR)/array_list.o
+	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
+
+e_b_search_tree: $(EXAMPLESDIR)/e_b_search_tree.c $(OBJDIR)/b_search_tree.o
+	$(CC) $(CFLAGS) -o $(BINDIR)/$@ $^
+
 $(OBJDIR)/array_list.o: $(SRCDIR)/array_list.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
@@ -55,6 +61,12 @@ $(OBJDIR)/stack.o: $(SRCDIR)/stack.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 $(OBJDIR)/hash_map.o: $(SRCDIR)/hash_map.c
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+$(OBJDIR)/tree.o: $(SRCDIR)/tree.c
+	$(CC) $(CFLAGS) -c -o $@ $^
+
+$(OBJDIR)/b_search_tree.o: $(SRCDIR)/b_search_tree.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 clean:

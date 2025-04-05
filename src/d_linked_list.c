@@ -16,6 +16,7 @@
 */
 
 #include "d_linked_list.h"
+#include "std_dds_core.h"
 
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
@@ -64,17 +65,17 @@ DLinkedList *DLinkedListInit(){
     return list;
 }
 
-int DLinkedListPush(DLinkedList *list, void *value){
+STD_DDS_RESULT DLinkedListPush(DLinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] DLinkedListPush failed. DLinkedList value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     DLinkedNode *node = DLinkedNodeInit(value);
     if(node == NULL){
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
 
     if(list->head != NULL){
@@ -90,20 +91,20 @@ int DLinkedListPush(DLinkedList *list, void *value){
 
     list->length++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
-int DLinkedListAppend(DLinkedList *list, void *value){
+STD_DDS_RESULT DLinkedListAppend(DLinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] DLinkedListAppend failed. DLinkedList value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     DLinkedNode *node = DLinkedNodeInit(value);
     if(node == NULL){
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
 
     if(list->tail != NULL){
@@ -119,7 +120,7 @@ int DLinkedListAppend(DLinkedList *list, void *value){
 
     list->length++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
 void *DLinkedListPop(DLinkedList *list){
@@ -200,7 +201,7 @@ size_t DLinkedListGetLength(const DLinkedList *list){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] DLinkedListGetLength failed. DLinkedList value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     }
 
     return list->length;
@@ -228,12 +229,12 @@ DLinkedNode *DLinkedListGetTail(const DLinkedList *list){
     return list->tail;
 }
 
-int DLinkedListFree(DLinkedList *list){
+STD_DDS_RESULT DLinkedListFree(DLinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stdout, "[Warning] DLinkedListFree failed. DLinkedList value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     DLinkedNode *node = list->head;
@@ -245,5 +246,5 @@ int DLinkedListFree(DLinkedList *list){
 
     free(list);
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }

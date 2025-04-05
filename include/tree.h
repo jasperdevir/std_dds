@@ -13,21 +13,31 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ */
 
-#ifndef STD_DDS_H
-#define STD_DDS_H
-
-#include "std_dds_core.h"
+#ifndef STD_DDS_TREE_H
+#define STD_DDS_TREE_H
 
 #include "array_list.h"
-#include "linked_list.h"
-#include "d_linked_list.h"
-#include "stack.h"
-#include "queue.h"
-#include "hash_map.h"
-#include "graph.h"
-#include "tree.h"
-#include "b_search_tree.h"
+#include "std_dds_core.h"
 
-#endif // STD_DDS_H
+typedef struct treeNode TreeNode;
+
+TreeNode *TreeNodeInit(const char *key, void *value);
+
+TreeNode *TreeNodeGet(const TreeNode *parent, const char *key);
+TreeNode *TreeGet(const TreeNode *tree, const char *key);
+
+TreeNode *TreeNodeAdd(TreeNode *parent, const char *key, void *value);
+STD_DDS_RESULT TreeNodeAddNode(TreeNode *parent, const TreeNode *child);
+
+TreeNode *TreeNodeRemove(TreeNode *parent, const char *key);
+TreeNode *TreeRemove(TreeNode *tree, const char *key);
+
+void *TreeNodeGetValue(const TreeNode *node);
+char *TreeNodeGetKey(const TreeNode *node);
+ArrayList *TreeNodeGetChildren(TreeNode *node);
+
+STD_DDS_RESULT TreeFree(TreeNode *tree);
+
+#endif // STD_DDS_TREE_H

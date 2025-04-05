@@ -16,6 +16,7 @@
 */
 
 #include "stack.h"
+#include "std_dds_core.h"
 
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
@@ -46,17 +47,17 @@ Stack *StackInit() {
     return stack;
 }
   
-int StackPush(Stack *stack, void *value) {
+STD_DDS_RESULT StackPush(Stack *stack, void *value) {
     if (stack == NULL) {
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] StackPush failed. Stack value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
   
     LinkedNode *node = LinkedNodeInit(value);
     if(node == NULL){
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
   
     node->next = stack->head;
@@ -64,7 +65,7 @@ int StackPush(Stack *stack, void *value) {
   
     stack->length++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
   
 void *StackPop(Stack *stack) {
@@ -99,7 +100,7 @@ size_t StackGetLength(const Stack *stack){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] StackGetLength failed. Stack value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     }
 
     return stack->length;
@@ -116,12 +117,12 @@ LinkedNode *StackGetHead(const Stack *stack){
     return stack->head;
 }
   
-int StackFree(Stack *stack) {
+STD_DDS_RESULT StackFree(Stack *stack) {
     if(stack == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] StackFree failed. Stack value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
   
     LinkedNode *node = stack->head;
@@ -133,5 +134,5 @@ int StackFree(Stack *stack) {
   
     free(stack);
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }

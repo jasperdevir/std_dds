@@ -15,12 +15,13 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef STD_DDS_QUEUE
-#define STD_DDS_QUEUE
+#ifndef STD_DDS_QUEUE_H
+#define STD_DDS_QUEUE_H
 
-#include <stdlib.h>
-
+#include "std_dds_core.h"
 #include "d_linked_list.h"
+
+#include <stddef.h>
 
 typedef struct queue Queue;
 
@@ -38,7 +39,7 @@ Queue *QueueInit();
  * the Queue.
  * @return 0 if successful.
 **/
-int QueueEnqueue(Queue *queue, void *value);
+STD_DDS_RESULT QueueEnqueue(Queue *queue, void *value);
 
 /**
  * Remove the head element of a Queue.
@@ -75,6 +76,6 @@ DLinkedNode *QueueGetTail(const Queue *queue);
  * DOES NOT free the memory of each element's value.
  * @param The Queue to free.
 **/
-int QueueFree(Queue *queue);
+STD_DDS_RESULT QueueFree(Queue *queue);
 
-#endif // STD_DDS_QUEUE
+#endif // STD_DDS_QUEUE_H

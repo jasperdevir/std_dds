@@ -10,6 +10,8 @@ implements of a range of basic dynamic data structures in C.
 - Queue
 - Graph (Adjacency Matrix)
 - Graph (Adjacency List)
+- Tree
+- Binary Search Tree
 - Hash Map
 
 ## Contents

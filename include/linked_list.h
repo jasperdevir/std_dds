@@ -15,10 +15,12 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef STD_DDS_LINKED_LIST
-#define STD_DDS_LINKED_LIST
+#ifndef STD_DDS_LINKED_LIST_H
+#define STD_DDS_LINKED_LIST_H
 
-#include <stdlib.h>
+#include "std_dds_core.h"
+
+#include <stddef.h>
 
 typedef struct linkedNode {
     void *value;
@@ -47,7 +49,7 @@ LinkedList *LinkedListInit();
  * @param value A pointer to the value to push onto the list.
  * @return 0 if successful.
 **/
-int LinkedListPush(LinkedList *list, void *value); 
+STD_DDS_RESULT LinkedListPush(LinkedList *list, void *value); 
 
 /**
  * Append a new node to the tail of a LinkedList.
@@ -55,7 +57,7 @@ int LinkedListPush(LinkedList *list, void *value);
  * @param value A pointer to the value to append to the list.
  * @return 0 if successful.
 **/
-int LinkedListAppend(LinkedList *list, void *value); 
+STD_DDS_RESULT LinkedListAppend(LinkedList *list, void *value); 
 
 /**
  * Remove the head node of a LinkedList.
@@ -101,6 +103,6 @@ LinkedNode *LinkedListGetTail(const LinkedList *list);
  * DOES NOT free the values of each node.
  * @param list The LinkedList to free.
 **/
-int LinkedListFree(LinkedList *list);
+STD_DDS_RESULT LinkedListFree(LinkedList *list);
 
-#endif // STD_DDS_LINKED_LIST
+#endif // STD_DDS_LINKED_LIST_H

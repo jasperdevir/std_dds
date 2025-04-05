@@ -15,10 +15,12 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef STD_DDS_HASH_MAP
-#define STD_DDS_HASH_MAP
+#ifndef STD_DDS_HASH_MAP_H
+#define STD_DDS_HASH_MAP_H
 
-#include <stdlib.h>
+#include "std_dds_core.h"
+
+#include <stddef.h>
 
 typedef struct hashMap HashMap;
 
@@ -47,7 +49,7 @@ void *HashMapGet(const HashMap *map, const char *key);
  * @param value The value to set the element.
  * @return 0 if successful.
 **/
-int HashMapSet(HashMap *map, const char *key, void *value);
+STD_DDS_RESULT HashMapSet(HashMap *map, const char *key, void *value);
 
 /**
  * Remove an element at a specified key from a HashMap.
@@ -78,6 +80,6 @@ size_t HashMapGetBCapacity(const HashMap *map);
  * @param The HashMap to free.
  * @return 0 if successful.
 **/ 
-int HashMapFree(HashMap *map);
+STD_DDS_RESULT HashMapFree(HashMap *map);
 
-#endif // STD_DDS_HASH_MAP
+#endif // STD_DDS_HASH_MAP_H

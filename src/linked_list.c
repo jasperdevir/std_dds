@@ -16,11 +16,13 @@
 */
 
 #include "linked_list.h"
+#include "std_dds_core.h"
 
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
 #endif
 
+#include <stdlib.h>
 #if defined(STD_DDS_ERROR_MSG) || defined(STD_DDS_WARNING_MSG)
     #include <stdio.h>
 #endif
@@ -62,17 +64,17 @@ LinkedList *LinkedListInit(){
     return list;
 }
 
-int LinkedListPush(LinkedList *list, void *value){
+STD_DDS_RESULT LinkedListPush(LinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] LinkedListPush failed. LinkedList value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     LinkedNode *node = LinkedNodeInit(value);
     if(node == NULL){
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
     
     if(list->head != NULL){
@@ -87,20 +89,20 @@ int LinkedListPush(LinkedList *list, void *value){
 
     list->length++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
-int LinkedListAppend(LinkedList *list, void *value){
+STD_DDS_RESULT LinkedListAppend(LinkedList *list, void *value){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] LinkedListAppend failed. LinkedList value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     LinkedNode *node = LinkedNodeInit(value);
     if(node == NULL){
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
 
     if(list->tail != NULL){
@@ -115,7 +117,7 @@ int LinkedListAppend(LinkedList *list, void *value){
 
     list->length++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
 void *LinkedListPop(LinkedList *list){
@@ -197,7 +199,7 @@ size_t LinkedListGetLength(const LinkedList *list){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] LinkedListGetLength failed. LinkedList value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     }
 
     return list->length;
@@ -225,12 +227,12 @@ LinkedNode *LinkedListGetTail(const LinkedList *list){
     return list->tail;
 }
 
-int LinkedListFree(LinkedList *list){
+STD_DDS_RESULT LinkedListFree(LinkedList *list){
     if(list == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] LinkedListFree failed. LinkedList value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     LinkedNode *node = list->head;
@@ -240,5 +242,5 @@ int LinkedListFree(LinkedList *list){
         node = next;
     }
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }

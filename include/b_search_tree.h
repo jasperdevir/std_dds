@@ -15,19 +15,27 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef STD_DDS_H
-#define STD_DDS_H
+#ifndef STD_DDS_B_SEARCH_TREE_H
+#define STD_DDS_B_SEARCH_TREE_H
 
 #include "std_dds_core.h"
 
-#include "array_list.h"
-#include "linked_list.h"
-#include "d_linked_list.h"
-#include "stack.h"
-#include "queue.h"
-#include "hash_map.h"
-#include "graph.h"
-#include "tree.h"
-#include "b_search_tree.h"
+typedef struct bSTreeNode {
+    int value;
+    struct bSTreeNode *left;
+    struct bSTreeNode *right;
+} BSTreeNode;
 
-#endif // STD_DDS_H
+BSTreeNode *BSTreeNodeInit(const int value);
+
+BSTreeNode *BSTreeGetNode(BSTreeNode *tree, const int value);
+
+STD_DDS_RESULT BSTreeInsert(BSTreeNode *tree, const int value);
+
+STD_DDS_RESULT BSTreeRemove(BSTreeNode *tree, const int value);
+
+BSTreeNode *BSTreeJoin(BSTreeNode *left, BSTreeNode *right);
+
+STD_DDS_RESULT BTreeFree(BSTreeNode *tree);
+
+#endif // STD_DDS_B_SEARCH_TREE_H

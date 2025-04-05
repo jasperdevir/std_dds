@@ -16,6 +16,7 @@
 */
 
 #include "graph.h"
+#include "std_dds_core.h"
 
 #if defined(STD_DDS_WARNING_MSG) && !defined(STD_DDS_ERROR_MSG)
     #define STD_DDS_ERROR_MSG
@@ -82,7 +83,7 @@ size_t GraphGetVLength(const Graph *graph){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphGetVLength failed. Graph value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     } 
 
     return graph->vLength;
@@ -93,49 +94,53 @@ size_t GraphGetELength(const Graph *graph){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphGetELength failed. Graph value is NULL.\n");
         #endif
-        return 0;
+        return -1;
     } 
 
     return graph->eLength;
 }
 
-int GraphAddVertices(Graph *graph, const size_t amount){
+STD_DDS_RESULT GraphAddVertices(Graph *graph, const size_t amount){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphAddVertices failed. Graph value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     } 
 
-    if(ArrayListResize(graph->edges, graph->vLength + amount) != 0){
-        return 1;
+    STD_DDS_RESULT result;
+
+    result = ArrayListResize(graph->edges, graph->vLength + amount);
+    if(result != STD_DDS_SUCCESS){
+        return result;
     }
 
     for(int i = 0; i < amount; i++){
-        if(ArrayListAppend(graph->edges, NULL) != 0){
-            return 1;
+        result = ArrayListAppend(graph->edges, NULL);
+        if(result != STD_DDS_SUCCESS){
+            return result;
         }
     } 
 
     graph->vLength += amount;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
 /*
-int GraphRemoveVertex(Graph *graph, const Vertex v){
+STD_DDS_RESULT GraphRemoveVertex(Graph *graph, const Vertex v){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphRemoveVertex failed. Graph value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     if(v > graph->vLength - 1){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] Vertex '%d' is out-of-bounds for Graph with a vLength of '%d'.\n", v, graph->vLength);
         #endif
-        return 1;
+        return STD_DDS_OUT_OF_BOUNDS;
     }
 
     unsigned int edgesRemoved = 0;
@@ -151,16 +156,16 @@ int GraphRemoveVertex(Graph *graph, const Vertex v){
     graph->eLength -= edgesRemoved;
     graph->vLength--;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 */
 
-int GraphInsertEdge(Graph *graph, const Edge edge){
+STD_DDS_RESULT GraphInsertEdge(Graph *graph, const Edge edge){
    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphInsertEdge failed. Graph value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     } 
     
     EdgeNode *curr = ArrayListGetAt(graph->edges, edge.v);
@@ -171,7 +176,7 @@ int GraphInsertEdge(Graph *graph, const Edge edge){
                 #ifdef STD_DDS_WARNING_MSG
                     fprintf(stderr, "[Warning] Edge '%d-%d' is already in this Graph.\n", edge.v, edge.w);
                 #endif
-                return 1;
+                return STD_DDS_DUPLICATE_VALUE;
             }
             curr = curr->next;
         }
@@ -182,7 +187,7 @@ int GraphInsertEdge(Graph *graph, const Edge edge){
         #ifdef STD_DDS_ERROR_MSG
             fprintf(stderr, "[Error] Insert edge malloc failed. Unable to allocate memory of %zu bytes.\n", sizeof(Edge));
         #endif
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
 
     edgeP->v = edge.v;
@@ -190,33 +195,36 @@ int GraphInsertEdge(Graph *graph, const Edge edge){
 
     EdgeNode *node = EdgeNodeInit(edgeP);
     if(node == NULL){
-        return 1;
+        return STD_DDS_MALLOC_FAILED;
     }
 
     if(curr == NULL){
-        ArrayListSetAt(graph->edges, edge.v, node);        
+        STD_DDS_RESULT result = ArrayListSetAt(graph->edges, edge.v, node);
+        if(result != STD_DDS_SUCCESS){
+            return result;
+        }
     } else {
         curr->next = node;
     }
 
     graph->eLength++;
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
-int GraphRemoveEdge(Graph *graph, Edge *edge){
+STD_DDS_RESULT GraphRemoveEdge(Graph *graph, Edge *edge){
     if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphRemoveEdge failed. Graph value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
     if(edge == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphRemoveEdge failed. Edge value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     }
 
 
@@ -226,11 +234,14 @@ int GraphRemoveEdge(Graph *graph, Edge *edge){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] Unable to remove edge '%d-%d' as it is not in this Graph.\n", edge->v, edge->w);
         #endif
-        return 1;
+        return STD_DDS_NOT_FOUND;
     }
     
     if(node->edge->v == edge->v && node->edge->w == edge->w){
-        ArrayListSetAt(graph->edges, edge->v, node->next);
+        STD_DDS_RESULT result = ArrayListSetAt(graph->edges, edge->v, node->next);
+        if(result != STD_DDS_SUCCESS){
+            return result;
+        }
         free(node);
     } else {
         while(node->next != NULL){
@@ -248,7 +259,7 @@ int GraphRemoveEdge(Graph *graph, Edge *edge){
 
     graph->eLength--;
 
-    return 0;
+    return STD_DDS_SUCCESS;
     
 }
 
@@ -282,12 +293,12 @@ Edge *GraphGetEdge(Graph *graph, const Vertex v, const Vertex w){
     return NULL;
 }
 
-int GraphFree(Graph *graph){
+STD_DDS_RESULT GraphFree(Graph *graph){
    if(graph == NULL){
         #ifdef STD_DDS_WARNING_MSG
             fprintf(stderr, "[Warning] GraphFree failed. Graph value is NULL.\n");
         #endif
-        return 1;
+        return STD_DDS_NULL_PARAM;
     } 
 
     for(int i = 0; i < graph->eLength; i++){
@@ -299,9 +310,12 @@ int GraphFree(Graph *graph){
         } 
     }
    
-    ArrayListFree(graph->edges); 
+    STD_DDS_RESULT result = ArrayListFree(graph->edges); 
+    if(result != STD_DDS_SUCCESS){
+        return result;
+    }
     free(graph);
 
-    return 0;
+    return STD_DDS_SUCCESS;
 }
 
