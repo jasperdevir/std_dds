@@ -109,7 +109,7 @@ The compiled example programs should now be in the `/bin/` directory.
     - _(Automatically defines `STD_DDS_ERROR_MSG`)_    
 
 ### Result Codes
-:
+
 - `STD_DDS_RESULT` = `unsigned int`
 
 ##### Success Code
