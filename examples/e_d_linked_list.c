@@ -16,6 +16,7 @@
 */
 
 #include "d_linked_list.h"
+#include "std_dds_core.h"
 
 #include <stdio.h>
 
@@ -50,25 +51,46 @@ void PrintStrDLinkedListRev(DLinkedList *list){
 }
 
 int main(void){
+    STD_DDS_RESULT result;
+
     printf("\n== std_dds DLinkedList Example ==\n");
 
     printf("\n-- DLinkedListInit() --\n");
     printf("Initialising DLinkedList.\n");
     DLinkedList *list = DLinkedListInit();
+    if(list == NULL){
+        printf("Failed to initialise DLinkedList. Exiting.\n");
+        return 1;
+    }
 
     printf("\n-- DLinkedListAppend() --\n");
 
     char a[] = "a";
     printf("Appending '%s' onto the tail of the DLinkedList.\n", a);
-    DLinkedListAppend(list, &a);
+    result = DLinkedListAppend(list, &a);
+    if(result != STD_DDS_SUCCESS){
+        printf("Failed to append onto DLinkedList. Exiting.\n");
+        DLinkedListFree(list);
+        return 1;
+    }
 
     char b[] = "DLinkedList";
     printf("Appending '%s' onto the tail of the DLinkedList.\n", b);
-    DLinkedListAppend(list, &b);
+    result = DLinkedListAppend(list, &b);
+    if(result != STD_DDS_SUCCESS){
+        printf("Failed to append onto DLinkedList. Exiting.\n");
+        DLinkedListFree(list);
+        return 1;
+    }
 
     char c[] = "list";
     printf("Appending '%s' onto the tail of the DLinkedList.\n", c);
-    DLinkedListAppend(list, &c);
+    result = DLinkedListAppend(list, &c);
+    if(result != STD_DDS_SUCCESS){
+        printf("Failed to append onto DLinkedList. Exiting.\n");
+        DLinkedListFree(list);
+        return 1;
+    }
 
     PrintStrDLinkedList(list);
 
@@ -76,15 +98,30 @@ int main(void){
 
     char d[] = "is";
     printf("Pushing '%s' onto the head of the DLinkedList.\n", d);
-    DLinkedListPush(list, &d);
+    result = DLinkedListPush(list, &d);
+    if(result != STD_DDS_SUCCESS){
+        printf("Failed to push onto DLinkedList. Exiting.\n");
+        DLinkedListFree(list);
+        return 1;
+    }
 
     char e[] = "This";
     printf("Pushing '%s' onto the head of the DLinkedList.\n", e);
-    DLinkedListPush(list, &e);
+    result = DLinkedListPush(list, &e);
+    if(result != STD_DDS_SUCCESS){
+        printf("Failed to push onto DLinkedList. Exiting.\n");
+        DLinkedListFree(list);
+        return 1;
+    }
 
     char f[] = "this";
     printf("Pushing '%s' onto the head of the DLinkedList.\n", f);
-    DLinkedListPush(list, &f);
+    result = DLinkedListPush(list, &f);
+    if(result != STD_DDS_SUCCESS){
+        printf("Failed to push onto DLinkedList. Exiting.\n");
+        DLinkedListFree(list);
+        return 1;
+    }
 
     PrintStrDLinkedList(list);
 
@@ -94,12 +131,13 @@ int main(void){
 
     printf("Popping the head element from the DLinkedList.\n");
     value = DLinkedListPop(list);
-    if(value != NULL){
-        printf("'%s' removed from the head of the DLinkedList successfully.\n", (char *)value);
-    } else {
+    if(value == NULL){
         printf("Popping the head element from the DLinkedList was unsuccessful. Exiting.\n");
+        DLinkedListFree(list);
         return 1;
     }
+
+    printf("'%s' removed from the head of the DLinkedList successfully.\n", (char *)value);
 
     PrintStrDLinkedList(list);
 
@@ -107,19 +145,24 @@ int main(void){
 
     printf("Popping the tail element from the DLinkedList.\n");
     value = DLinkedListPopTail(list);
-    if(value != NULL){
-        printf("'%s' removed from the tail of the DLinkedList successfully.\n", (char *)value);
-    } else {
+    if(value == NULL) {
         printf("Popping the tail element from the DLinkedList was unsuccessful. Exiting.\n");
+        DLinkedListFree(list);
         return 1;
     }
+
+    printf("'%s' removed from the tail of the DLinkedList successfully.\n", (char *)value);
 
     PrintStrDLinkedList(list);
     PrintStrDLinkedListRev(list);
 
     printf("\n-- DLinkedListFree() --\n");
     printf("Freeing DLinkedList.\n");
-    DLinkedListFree(list);
+    result = DLinkedListFree(list);
+    if(result != STD_DDS_SUCCESS){
+        printf("Failed to free DLinkedList. Exiting.\n");
+        return 1;
+    }
 
     return 0;
 

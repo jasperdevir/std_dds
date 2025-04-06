@@ -34,12 +34,15 @@ typedef struct linkedList LinkedList;
  * pointer value.
  * @param value The value of the LinkedNode.
  * @return A pointer to the initialised LinkedNode.
+ * Returns NULL if memory allocation failed.
 **/
 LinkedNode *LinkedNodeInit(void *value);
 
 
-/** Initialise and allocate memory for a LinkedList object.
+/** 
+ * Initialise and allocate memory for a LinkedList object.
  * @return A pointer to the initialised LinkedList.
+ * Returns NULL if memory allocation failed.
 **/
 LinkedList *LinkedListInit();
 
@@ -47,7 +50,7 @@ LinkedList *LinkedListInit();
  * Push a new node onto the head of a LinkedList.
  * @param list The LinkedList to push a node onto.
  * @param value A pointer to the value to push onto the list.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT LinkedListPush(LinkedList *list, void *value); 
 
@@ -55,7 +58,7 @@ STD_DDS_RESULT LinkedListPush(LinkedList *list, void *value);
  * Append a new node to the tail of a LinkedList.
  * @param list The LinkedList to append a node to.
  * @param value A pointer to the value to append to the list.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT LinkedListAppend(LinkedList *list, void *value); 
 
@@ -79,6 +82,7 @@ void *LinkedListPopTail(LinkedList *list);
  * Get the current length of a LinkedList.
  * @param list The LinkedList to query.
  * @return The LinkedList's length.
+ * Returns -1 if the list is NULL.
 **/
 size_t LinkedListGetLength(const LinkedList *list);
 
@@ -102,6 +106,7 @@ LinkedNode *LinkedListGetTail(const LinkedList *list);
  * Free the memory allocated for a LinkedList and its nodes.
  * DOES NOT free the values of each node.
  * @param list The LinkedList to free.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT LinkedListFree(LinkedList *list);
 

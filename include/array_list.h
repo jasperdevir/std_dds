@@ -28,6 +28,7 @@ typedef struct arrayList ArrayList;
  * Initialise and allocate memory for an ArrayList object with an initial array capacity.
  * @param capacity The initial capacity of the ArrayList array.
  * @return A pointer to the initialised ArrayList.
+ * Returns NULL if memory allocation failed.
 **/
 ArrayList *ArrayListInit(const size_t capacity);
 
@@ -111,8 +112,9 @@ void *ArrayListRemoveAt(ArrayList *list, const int index);
 
 /**
  * Get the current length of an ArrayList.
- * @param The ArrayList to query.
+ * @param list The ArrayList to query.
  * @return The ArrayList's length.
+ * Returns -1 if list is NULL.
 **/
 size_t ArrayListGetLength(const ArrayList *list);
 
@@ -120,13 +122,14 @@ size_t ArrayListGetLength(const ArrayList *list);
  * Get the current capacity of an ArrayList.
  * @param The ArrayList to query.
  * @return The ArrayList's capacity.
+ * Returns -1 if list is NULL.
 **/
 size_t ArrayListGetCapacity(const ArrayList *list);
 
 /**
  * Free the memory allocated for an ArrayList object and its array.
  * DOES NOT free the memory of each element's value in its array.
- * @param The ArrayList to free.
+ * @param list The ArrayList to free.
  * @return STD_DDS_RESULT
 **/
 STD_DDS_RESULT ArrayListFree(ArrayList* list);

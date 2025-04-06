@@ -15,6 +15,8 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "std_dds_core.h"
+#include "std_dds_utils.h"
 #include "linked_list.h"
 
 #include <stdio.h>
@@ -35,33 +37,70 @@ void PrintCharLinkedList(LinkedList *list){
 }
 
 int main(void){
+    STD_DDS_RESULT result;
+
     printf("\n== std_dds LinkedList Example ==\n");
 
     printf("\n-- LinkedListInit() --\n");
+
     printf("Initialising LinkedList.\n");
     LinkedList *list = LinkedListInit();
+    if(list == NULL){
+        printf("Failed to initialise LinkedList. Exiting.\n");
+        return 1;
+    }
 
     printf("\n-- LinkedListAppend() --\n");
 
     char a = 'e';
     printf("Appending '%c' onto the tail of the LinkedList.\n", a);
-    LinkedListAppend(list, &a);
+    result = LinkedListAppend(list, &a);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append LinkedList. Exiting.\n");
+        LinkedListFree(list);
+        return 1;
+    }
 
     char b = 'l';
     printf("Appending '%c' onto the tail of the LinkedList.\n", b);
-    LinkedListAppend(list, &b);
+    result = LinkedListAppend(list, &b);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append LinkedList. Exiting.\n");
+        LinkedListFree(list);
+        return 1;
+    }
 
     char c = 'l';
     printf("Appending '%c' onto the tail of the LinkedList.\n", c);
-    LinkedListAppend(list, &c);
+    result = LinkedListAppend(list, &c);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append LinkedList. Exiting.\n");
+        LinkedListFree(list);
+        return 1;
+    }
 
     char d = 'o';
     printf("Appending '%c' onto the tail of the LinkedList.\n", d);
-    LinkedListAppend(list, &d);
+    result = LinkedListAppend(list, &d);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append LinkedList. Exiting.\n");
+        LinkedListFree(list);
+        return 1;
+    }
 
     char e = 'o';
     printf("Appending '%c' onto the tail of the LinkedList.\n", e);
-    LinkedListAppend(list, &e);
+    result = LinkedListAppend(list, &e);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append LinkedList. Exiting.\n");
+        LinkedListFree(list);
+        return 1;
+    }
 
     PrintCharLinkedList(list);
 
@@ -69,11 +108,23 @@ int main(void){
 
     char f = 'H';
     printf("Pushing '%c' onto the head of the LinkedList.\n", f);
-    LinkedListPush(list, &f);
+    result = LinkedListPush(list, &f);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to push LinkedList. Exiting.\n");
+        LinkedListFree(list);
+        return 1;
+    }
 
     char g = 'h';
     printf("Pushing '%c' onto the head of the LinkedList.\n", g);
-    LinkedListPush(list, &g);
+    result = LinkedListPush(list, &g);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to push LinkedList. Exiting.\n");
+        LinkedListFree(list);
+        return 1;
+    }
 
     PrintCharLinkedList(list);
 
@@ -82,30 +133,37 @@ int main(void){
     printf("\n-- LinkedListPop() --\n");
     printf("Popping the head element from the LinkedList.\n");
     value = LinkedListPop(list);
-    if(value != NULL){
-        printf("'%c' removed from the head of the LinkedList successfully.\n", *(char *)value);
-    } else {
+    if(value == NULL){
         printf("Popping the head element from the LinkedList was unsuccessful. Exiting.\n");
+        LinkedListFree(list);
         return 1;
     }
+
+    printf("'%c' removed from the head of the LinkedList successfully.\n", *(char *)value);
 
     PrintCharLinkedList(list);
 
     printf("\n-- LinkedListPopTail() --\n");
     printf("Popping the tail element from the LinkedList.\n");
     value = LinkedListPopTail(list);
-    if(value != NULL){
-        printf("'%c' removed from the tail of the LinkedList successfully.\n", *(char *)value);
-    } else {
+    if(value == NULL) {
         printf("Popping the tail element from the LinkedList was unsuccessful. Exiting.\n");
+        LinkedListFree(list);
         return 1;
     }
+
+    printf("'%c' removed from the tail of the LinkedList successfully.\n", *(char *)value); 
     
     PrintCharLinkedList(list);
 
     printf("\n-- LinkedListFree() --\n");
     printf("Freeing LinkedList.\n");
-    LinkedListFree(list);
+    result = LinkedListFree(list);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to free LinkedList. Exiting.\n");
+        return 1;
+    }
 
     return 0;
 }

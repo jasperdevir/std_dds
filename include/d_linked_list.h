@@ -34,12 +34,15 @@ typedef struct dLinkedList DLinkedList;
  * Initialise and allocate memory for a DLinkedNode object with a specified pointer value.
  * @param value The value of the DLinkedNode.
  * @return A pointer to the initialised DLinkedNode.
+ * Returns NULL if memory allocation failed.
 **/
 DLinkedNode *DLinkedNodeInit(void *value);
 
 
-/** Initialise and allocate memory for a DLinkedList object.
+/** 
+ * Initialise and allocate memory for a DLinkedList object.
  * @return A pointer to the initialised DLinkedList.
+ * Returns NULL if memory allocation failed.
 **/
 DLinkedList *DLinkedListInit();
 
@@ -47,7 +50,7 @@ DLinkedList *DLinkedListInit();
  * Push a new node onto the head of a DLinkedList.
  * @param list The DLinkedList to push a node onto.
  * @param value A pointer to the value to push onto the list.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT DLinkedListPush(DLinkedList *list, void *value);
 
@@ -55,7 +58,7 @@ STD_DDS_RESULT DLinkedListPush(DLinkedList *list, void *value);
  * Append a new node to the tail of a DLinkedList.
  * @param list The DLinkedList to append a node to.
  * @param value A pointer to the value to append to the list.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT DLinkedListAppend(DLinkedList *list, void *value);
 
@@ -80,6 +83,7 @@ void *DLinkedListPopTail(DLinkedList *list);
  * Get the current length of a DLinkedList.
  * @param list The DLinkedList to query.
  * @return The DLinkedList's length.
+ * Returns -1 if the list is NULL.
 **/
 size_t DLinkedListGetLength(const DLinkedList *list);
 
@@ -103,7 +107,7 @@ DLinkedNode *DLinkedListGetTail(const DLinkedList *list);
  * Free the memory allocated for a DLinkedList object and its nodes.
  * DOES NOT free the memory of each element's value in its nodes.
  * @param The DLinkedList to free.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT DLinkedListFree(DLinkedList *list);
 

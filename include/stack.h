@@ -28,7 +28,7 @@ typedef struct stack Stack;
 /**
  * Initialise and allocate memory for an Stack object.
  * @return A pointer to the initialised Stack.
- * Returns NULL if initialisation failed.
+ * Returns NULL if memory allocation failed.
  **/
 Stack *StackInit();
 
@@ -36,7 +36,7 @@ Stack *StackInit();
  * Push a new element to the top of a Stack.
  * @param stack The Stack to push the element onto.
  * @param value A pointer to the element to push onto the Stack.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT StackPush(Stack *stack, void *value);
 
@@ -44,7 +44,8 @@ STD_DDS_RESULT StackPush(Stack *stack, void *value);
  * Remove an element from the top of the Stack.
  * @param stack The Stack to pop an element from.
  * @return A pointer to the value of the element that was removed from the
- * Stack. Returns NULL if the Stack is empty.
+ * Stack. 
+ * Returns NULL if the Stack is empty.
 **/
 void *StackPop(Stack *stack);
 
@@ -52,6 +53,7 @@ void *StackPop(Stack *stack);
  * Get the current length of a Stack.
  * @param stack The Stack to query.
  * @return The Stack's length.
+ * Returns -1 if the Stack is NULL.
 **/
 size_t StackGetLength(const Stack *stack);
 
@@ -67,7 +69,7 @@ LinkedNode *StackGetHead(const Stack *stack);
  * Free the memory allocated for a Stack and its elements.
  * DOES NOT free the memory of each element's value.
  * @param The Stack to free.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT StackFree(Stack *stack);
 

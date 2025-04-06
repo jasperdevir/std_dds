@@ -20,6 +20,10 @@
 
 #include "std_dds_core.h"
 
+/**
+ * Print the definition name of a result code to stdout.
+ * @param result The result code to print.
+**/
 void PrintResultCode(STD_DDS_RESULT result);
 
 #endif // STD_DDS_UTILS

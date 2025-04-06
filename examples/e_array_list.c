@@ -15,7 +15,7 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#define STD_DDS_WARNING_MSG
+#include "std_dds_utils.h"
 #include "array_list.h"
 
 #include <stdio.h>
@@ -43,6 +43,8 @@ void PrintIntArrayList(ArrayList *list) {
 
 
 int main(void){
+    STD_DDS_RESULT result;
+
     printf("\n== std_dds ArrayList Example ==\n");
 
     printf("\n-- ArrayListInit() --\n");
@@ -50,23 +52,45 @@ int main(void){
     size_t listCapacity = 5;
     printf("Initialising an ArrayList with a capacity of '%zu' elements.\n", listCapacity);
     ArrayList *list = ArrayListInit(5);
+    if(list == NULL){
+        printf("Failed to initialise ArrayList. Exiting.\n");
+        return 1;
+    }
     PrintIntArrayList(list);
 
     printf("\n-- ArrayListAppend() --\n");
 
     int a = 10;
     printf("Appending '%d' to ArrayList.\n", a);
-    ArrayListAppend(list, &a);
+    result = ArrayListAppend(list, &a);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append to ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
     PrintIntArrayList(list);
 
     int b = 20;
     printf("Appending '%d' to ArrayList.\n", b);
-    ArrayListAppend(list, &b);
+    result = ArrayListAppend(list, &b);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append to ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
     PrintIntArrayList(list);
 
     int c = 30;
     printf("Appending '%d' to ArrayList.\n", c);
-    ArrayListAppend(list, &c);
+    result = ArrayListAppend(list, &c);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to append to ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
     PrintIntArrayList(list);
 
     printf("\n-- ArrayListRemoveAt() --\n");
@@ -76,38 +100,52 @@ int main(void){
     unsigned int removeIndex = 1;
     printf("Removing element at index [%d] from ArrayList.\n", removeIndex);
     removeResult = ArrayListRemoveAt(list, removeIndex);
-    if(removeResult != NULL){
-        printf("'%d' removed from ArrayList successfully.\n", *(int *)removeResult);
-        PrintIntArrayList(list);
-    } else {
+    if(removeResult == NULL) {
         printf("Removing element at index [%d] was unsuccessful. Exiting.\n", removeIndex);
+        ArrayListFree(list);
         return 1;
     }
+
+    printf("'%d' removed from ArrayList successfully.\n", *(int *)removeResult);
+    PrintIntArrayList(list);
 
     printf("\n-- ArrayListPop() --\n");
 
     printf("Popping last element from ArrayList.\n");
     removeResult = ArrayListPop(list);
-    if(removeResult != NULL){
-        printf("'%d' popped from ArrayList successfully.\n", *(int *)removeResult);
-        PrintIntArrayList(list);
-    } else {
+    if(removeResult == NULL){
         printf("Popping last element from ArrayList was unsuccessful. Exiting.\n");
+        ArrayListFree(list);
         return 1;
     }
+
+    printf("'%d' popped from ArrayList successfully.\n", *(int *)removeResult);
+    PrintIntArrayList(list);
 
     printf("\n-- ArrayListPush() --\n");
 
     int d = 5;
     printf("Pushing '%d' into ArrayList.\n", d);
-    ArrayListPush(list, &d);
+    result = ArrayListPush(list, &d);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to push to ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
     PrintIntArrayList(list);
 
     printf("\n-- ArrayListResize() --\n");
 
     size_t listResizeCapacity = 6;
     printf("Resizeing ArrayList capacity from '%zu' to '%zu'.\n", ArrayListGetCapacity(list), listResizeCapacity);
-    ArrayListResize(list, listResizeCapacity);
+    result = ArrayListResize(list, listResizeCapacity);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to resize ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
     PrintIntArrayList(list);
     
     printf("\n-- ArrayListInsertAt() --\n");
@@ -117,22 +155,46 @@ int main(void){
     int e = 6;
     insertIndex = 1;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", e, insertIndex);
-    ArrayListInsertAt(list, insertIndex, &e);
+    result = ArrayListInsertAt(list, insertIndex, &e);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
 
     int f = 7;
     insertIndex++;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", f, insertIndex);
-    ArrayListInsertAt(list, insertIndex, &f); 
+    result = ArrayListInsertAt(list, insertIndex, &f);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
 
     int g = 8;
     insertIndex++;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", g, insertIndex);
-    ArrayListInsertAt(list, insertIndex, &g); 
+    result = ArrayListInsertAt(list, insertIndex, &g); 
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
 
     int h = 9;
     insertIndex++;
     printf("Inserting '%d' at index [%d] of ArrayList.\n", h, insertIndex);
-    ArrayListInsertAt(list, insertIndex, &h); 
+    result = ArrayListInsertAt(list, insertIndex, &h);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into ArrayList. Exiting.\n");
+        ArrayListFree(list);
+        return 1;
+    }
 
     PrintIntArrayList(list);
 
@@ -141,12 +203,14 @@ int main(void){
     printf("Getting ArrayList elements of by index.\n");
     for(size_t i = 0; i < ArrayListGetLength(list); i++){
         void *value = ArrayListGetAt(list, i);
-        if(value != NULL){
-            printf("ArrayList element at index [%zu] = %d.\n", i, *(int *)value);
-        } else {
+        if(value == NULL){
             printf("Unable to get ArrayList element at index [%zu]. Exiting.\n", i);
+            ArrayListFree(list);
             return 1;
         }
+
+        printf("ArrayList element at index [%zu] = %d.\n", i, *(int *)value);
+
     }
 
     printf("\n-- ArrayListFree() --\n");

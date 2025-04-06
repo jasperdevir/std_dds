@@ -46,18 +46,20 @@ BSTreeNode *BSTreeNodeInit(const int value){
 BSTreeNode *bSTreeSearch(BSTreeNode *root, const int value){
     if(root == NULL){
         return NULL;
-    } else if (root->value == value){
+    }
+
+    if (root->value == value){
         return root;
-    } else if (value > root->value){
-        BSTreeNode *right = bSTreeSearch(root->right, value);
-        if(right != NULL){
-            return right;
-        }
-    } else if (value < root->value){
-        BSTreeNode *left = bSTreeSearch(root->left, value);
-        if(left != NULL){
-            return left;
-        }
+    }
+        
+    BSTreeNode *right = bSTreeSearch(root->right, value);
+    if(right != NULL){
+        return right;
+    }
+    
+    BSTreeNode *left = bSTreeSearch(root->left, value);
+    if(left != NULL){
+        return left;
     }
 
     return NULL;
@@ -82,7 +84,11 @@ BSTreeNode *bSTreeInsert(BSTreeNode *tree, const int value){
         (tree->left == NULL && value < tree->value)
     ){
         return tree;
-    } 
+    } else if (tree->left != NULL && value < tree->value){
+        return bSTreeInsert(tree->left, value);
+    } else if (tree->right != NULL && value > tree->value){
+        return bSTreeInsert(tree->right, value);
+    }
 
     return NULL;
 }
@@ -176,11 +182,7 @@ STD_DDS_RESULT BSTreeRemove(BSTreeNode *tree, const int value){
         return STD_DDS_NULL_PARAM;
     }
 
-     BSTreeNode* newTree = bSTreeRemove(tree, value);
-
-    if (newTree == tree) {
-        return STD_DDS_NOT_FOUND;    
-    }
+    bSTreeRemove(tree, value);
 
     return STD_DDS_SUCCESS;
 }

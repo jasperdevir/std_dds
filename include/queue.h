@@ -28,7 +28,7 @@ typedef struct queue Queue;
 /**
  * Initialise and allocate memory for a Queue object.
  * @return A pointer to the initialised Queue.
- * Returns NULL if initialisation failed.
+ * Returns NULL if memory allocation failed.
 **/
 Queue *QueueInit();
 
@@ -37,7 +37,7 @@ Queue *QueueInit();
  * @param queue The Queue to enqueue an element into.
  * @param value A pointer to the value of the new element to add into 
  * the Queue.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT QueueEnqueue(Queue *queue, void *value);
 
@@ -45,6 +45,7 @@ STD_DDS_RESULT QueueEnqueue(Queue *queue, void *value);
  * Remove the head element of a Queue.
  * @param queue The Queue to dequeue an element from.
  * @return A pointer to the value of the element removed from the Queue.
+ * Returns NULL if the Queue is empty.
 **/
 void *QueueDequeue(Queue *queue);
 
@@ -52,6 +53,7 @@ void *QueueDequeue(Queue *queue);
  * Get the current length of a Queue.
  * @param queue The Queue to query.
  * @return The Queue's length.
+ * Returns -1 if the Queue is NULL.
 **/
 size_t QueueGetLength(const Queue *queue);
 
@@ -75,6 +77,7 @@ DLinkedNode *QueueGetTail(const Queue *queue);
  * Free the memory allocated for a Queue object and its elements.
  * DOES NOT free the memory of each element's value.
  * @param The Queue to free.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT QueueFree(Queue *queue);
 

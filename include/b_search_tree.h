@@ -28,20 +28,69 @@ typedef struct bSTreeNode {
     struct bSTreeNode *right;
 } BSTreeNode;
 
+/**
+ * Initialise and allocate memory for a BSTreeNode object.
+ * @param value The value of the BSTreeNode.
+ * @return A pointer to the initialised BSTreeNode.
+ * Returns NULL if memory allocation failed.
+**/
 BSTreeNode *BSTreeNodeInit(const int value);
 
+/**
+ * Search a tree for a specific value.
+ * @param tree The root node of the tree to search.
+ * @param value The value to search for.
+ * @return A pointer to the node that contains the value.
+ * Returns NULL if the value is not within the tree.
+**/
 BSTreeNode *BSTreeGetNode(BSTreeNode *tree, const int value);
 
+/**
+ * Insert a value into a tree at the next avaliable leaf.
+ * @param tree The root node of the tree to insert the value into.
+ * @param value The value to insert.
+ * @return STD_DDS_RESULT.
+**/
 STD_DDS_RESULT BSTreeInsert(BSTreeNode *tree, const int value);
 
+/**
+ * Insert a value into a tree at the next avaliable leaf.
+ * @param tree The root node of the tree to insert the value into.
+ * @param value The value to insert.
+ * @return STD_DDS_RESULT.
+**/
 STD_DDS_RESULT BSTreeRemove(BSTreeNode *tree, const int value);
 
-BSTreeNode *BSTreeJoin(BSTreeNode *left, BSTreeNode *right);
+/**
+ * Join two trees into a single tree.
+ * @param tree1 The first tree to join.
+ * @param tree2 The second tree to join.
+ * @return A pointer to the new root node of the combined trees.
+**/
+BSTreeNode *BSTreeJoin(BSTreeNode *tree1, BSTreeNode *tree2);
 
+
+/**
+ * Calculate the total height of a tree.
+ * @param tree The root node of the tree to query.
+ * @return The total height of the tree.
+ * Returns -1 if tree is NULL.
+**/
 size_t BSTreeGetHeight(const BSTreeNode *tree);
 
+/**
+ * Calculate the max width of a tree.
+ * @param tree The root node of the tree to query.
+ * @return The max width of the tree.
+ * Returns -1 if tree is NULL. 
+**/
 size_t BSTreeGetMaxWidth(const BSTreeNode *tree);
 
+/**
+ * Free the allocated memory for a tree and its nodes.
+ * @param tree The root node of the tree to free.
+ * @return STD_DDS_RESULT.
+**/
 STD_DDS_RESULT BSTreeFree(BSTreeNode *tree);
 
 #endif // STD_DDS_B_SEARCH_TREE_H

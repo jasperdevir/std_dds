@@ -29,7 +29,7 @@ typedef struct hashMap HashMap;
  * of its primary bucket array.
  * @param capacity The capacity of its primary bucket array.
  * @return A pointer to the initialised HashMap.
- * Returns NULL if initialisation failed.
+ * Returns NULL if memory allocation failed.
 **/
 HashMap *HashMapInit(const size_t bCapacity);
 
@@ -47,7 +47,7 @@ void *HashMapGet(const HashMap *map, const char *key);
  * @param map The HashMap to add with the element to set.
  * @param key The key of the element to set.
  * @param value The value to set the element.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/
 STD_DDS_RESULT HashMapSet(HashMap *map, const char *key, void *value);
 
@@ -64,6 +64,7 @@ void *HashMapRemove(HashMap *map, const char *key);
  * Get the current amount of elements in a HashMap.
  * @param map The HashMap to query.
  * @return The HashMap's count.
+ * Returns -1 if the map is NULL.
 **/
 size_t HashMapGetCount(const HashMap *map);
 
@@ -71,6 +72,7 @@ size_t HashMapGetCount(const HashMap *map);
  * Get the capacity of the primary bucket array of a HashMap.
  * @param map the HashMap to query.
  * @return The HashMap's primary array capacity.
+ * Returns -1 if the map is NULL.
 **/
 size_t HashMapGetBCapacity(const HashMap *map);
 
@@ -78,7 +80,7 @@ size_t HashMapGetBCapacity(const HashMap *map);
  * Free the memory allocated for an HashMap object and its elements.
  * DOES NOT free the memory of each element's value.
  * @param The HashMap to free.
- * @return 0 if successful.
+ * @return STD_DDS_RESULT.
 **/ 
 STD_DDS_RESULT HashMapFree(HashMap *map);
 

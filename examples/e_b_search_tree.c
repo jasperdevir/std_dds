@@ -15,32 +15,38 @@
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "std_dds_core.h"
+#include "std_dds_utils.h"
 #include "b_search_tree.h"
 
 #include <stdio.h>
 
-void PrintBSTreeNode(const BSTreeNode *node, int indent, int indentStep) {
-    if (!node) return;
+void PrintBSTreeNode(const BSTreeNode *node, int depth, char prefix) {
+    if (!node) {
+        return;
+    }
 
     if (node->right) {
-        PrintBSTreeNode(node->right, indent + indentStep, indentStep);
+        PrintBSTreeNode(node->right, depth + 1, '/');
     }
 
-    for (int i = 0; i < indent; i++){
-        printf(" ");
+    for (int i = 0; i < depth - 1; i++){
+        printf("    ");
     }
-    printf("->%d\n", node->value);
+    if(depth > 0){
+        printf(" %c--", prefix);
+    }
+
+    printf("%d\n", node->value);
 
     if (node->left) {
-        PrintBSTreeNode(node->left, indent + indentStep, indentStep);
+        PrintBSTreeNode(node->left, depth + 1, '\\');
     }
-}
-
-void PrintBSTree(const BSTreeNode* tree){
-    PrintBSTreeNode(tree, 0, 2);
 }
 
 int main(void){
+    STD_DDS_RESULT result;
+
     printf("\n== std_dds Binary Search Tree Example ==\n");
 
     printf("\n-- BSTreeNodeInit() --\n");
@@ -48,55 +54,118 @@ int main(void){
     int a1 = 4;
     printf("Initialising BSTree with a value of '%d'.\n", a1);
     BSTreeNode *treeA = BSTreeNodeInit(a1);
+    if(treeA == NULL){
+        printf("Failed to initialise BSTreeNode. Exiting.\n");
+        return 1;
+    }
 
     int b1 = 8;
     printf("Initialising BSTree with a value of '%d'.\n", b1);
     BSTreeNode *treeB = BSTreeNodeInit(b1);
+    if(treeB == NULL){
+        printf("Failed to initialise BSTreeNode. Exiting.\n");
+        BSTreeFree(treeA);
+        return 1;
+    }
 
     printf("\n-- BSTreeInsert() --\n");
 
     int a2 = 10;
     printf("Inserting '%d' into 'treeA'.\n", a2);
-    BSTreeInsert(treeA, a2);
+    result = BSTreeInsert(treeA, a2);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into tree. Exiting.\n");
+        BSTreeFree(treeA);
+        BSTreeFree(treeB);
+        return 1;
+    }
 
     int a3 = 2;
     printf("Inserting '%d' into 'treeA'.\n", a3);
-    BSTreeInsert(treeA, a3);
+    result = BSTreeInsert(treeA, a3);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into tree. Exiting.\n");
+        BSTreeFree(treeA);
+        BSTreeFree(treeB);
+        return 1;
+    }
 
     int a4 = 9;
     printf("Inserting '%d' into 'treeA'.\n", a4);
-    BSTreeInsert(treeA, a4);
+    result = BSTreeInsert(treeA, a4);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into tree. Exiting.\n");
+        BSTreeFree(treeA);
+        BSTreeFree(treeB);
+        return 1;
+    }
 
     int b2 = 1;
     printf("Inserting '%d' into 'treeB'.\n", b2);
-    BSTreeInsert(treeB, b2);
+    result = BSTreeInsert(treeB, b2);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into tree. Exiting.\n");
+        BSTreeFree(treeA);
+        BSTreeFree(treeB);
+        return 1;
+    }
 
     int b3 = 12;
     printf("Inserting '%d' into 'treeB'.\n", b3);
-    BSTreeInsert(treeB, b3);
+    result = BSTreeInsert(treeB, b3);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into tree. Exiting.\n");
+        BSTreeFree(treeA);
+        BSTreeFree(treeB);
+        return 1;
+    }
 
     int b4 = 6;
     printf("Inserting '%d' into 'treeB'.\n", b4);
-    BSTreeInsert(treeB, b4);
+    result = BSTreeInsert(treeB, b4);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert into tree. Exiting.\n");
+        BSTreeFree(treeA);
+        BSTreeFree(treeB);
+        return 1;
+    }
 
     printf("\n'treeA' Result:\n");
-    PrintBSTree(treeA);
+    PrintBSTreeNode(treeA, 0, '-');
 
     printf("\n'treeB' Result:\n");
-    PrintBSTree(treeB);
+    PrintBSTreeNode(treeB, 0, '-');
 
     printf("\n-- BSTreeJoin() --\n");
 
     printf("Joining 'treeA' and 'treeB' to create 'treeC'.\n");
     BSTreeNode *treeC = BSTreeJoin(treeA, treeB);
+    if(treeC == NULL){
+        printf("Failed to join 'treeA' and 'treeB'. Exiting.\n");
+        BSTreeFree(treeA);
+        BSTreeFree(treeB);
+        return 1;
+    }
 
     printf("\n-- BSTreeRemove() --\n");
 
     printf("Removing '%d' from 'treeC'.\n", b4);
-    BSTreeRemove(treeC, b4);
+    result = BSTreeRemove(treeC, b4);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to remove '%d' from 'treeC'. Exiting.\n", b4);
+        BSTreeFree(treeC);
+        return 1;
+    }
 
     printf("\n'treeC' Result:\n");
-    PrintBSTree(treeC);
+    PrintBSTreeNode(treeC, 0, '-'); 
 
     printf("\n-- BSTreeGet() --\n");
 
@@ -104,11 +173,12 @@ int main(void){
     BSTreeNode *a3Node = BSTreeGetNode(treeC, a3);
     if(a3Node == NULL){
         printf("Getting '%d' node from 'treeC' was unsuccessful. Exiting.\n", a3);
+        BSTreeFree(treeC);
         return 1;
-    } else {
-        printf("Successfully recieved '%d' node from 'treeC'.\n", a3);
     }
-
+    
+    printf("Successfully recieved '%d' node from 'treeC'.\n", a3);
+    
     printf("\n-- BSTreeNodeFree() --\n");
     
     printf("Freeing BSTree.\n");

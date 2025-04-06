@@ -131,10 +131,19 @@ STD_DDS_RESULT ArrayListFill(ArrayList *list, void *value){
         return STD_DDS_NULL_PARAM;
     }
 
+    STD_DDS_RESULT result;
+
     for(int i = 0; i < list->capacity; i++){
-        STD_DDS_RESULT result = ArrayListSetAt(list, i, value);
-        if(result != STD_DDS_SUCCESS){
-            return result;
+        if(i >= list->length){
+            result = ArrayListAppend(list, value);
+            if(result != STD_DDS_SUCCESS){
+                return result;
+            }
+        } else {
+            result = ArrayListSetAt(list, i, value);
+            if(result != STD_DDS_SUCCESS){
+                return result;
+            }
         }
     }
 

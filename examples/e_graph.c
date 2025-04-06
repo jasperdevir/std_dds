@@ -14,12 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with std_dds.  If not, see <https://www.gnu.org/licenses/>.
  */
-
+#define STD_DDS_WARNING_MSG
+#include "std_dds_utils.h"
 #include "graph.h"
 
 #include <stdio.h>
 
 int main(void){
+    STD_DDS_RESULT result;
+
     printf("\n== std_dds Graph Example ==\n");
 
     printf("\n-- GraphInit() --\n");
@@ -27,7 +30,11 @@ int main(void){
     unsigned int vLength = 4;
 
     printf("Initialising a Graph with %d vertices.\n", vLength);
-    Graph *graph = GraphInit(4);
+    Graph *graph = GraphInit(vLength);
+    if(graph == NULL){
+        printf("Failed to initialise Graph. Exiting.\n");
+        return 1;
+    }
 
     printf("\n-- GraphInsertEdge() --\n");
 
@@ -35,31 +42,61 @@ int main(void){
     a.v = 0;
     a.w = 1;
     printf("Inserting edge, '%d - %d` into Graph.\n", a.v, a.w);    
-    GraphInsertEdge(graph, a);
+    result = GraphInsertEdge(graph, a);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert Edge into Graph. Exiting.\n");
+        GraphFree(graph);
+        return 1;
+    }
 
     Edge b;
     b.v = 0;
     b.w = 3;
     printf("Inserting edge, '%d - %d` into Graph.\n", b.v, b.w);    
-    GraphInsertEdge(graph, b);
+    result = GraphInsertEdge(graph, b);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert Edge into Graph. Exiting.\n");
+        GraphFree(graph);
+        return 1;
+    }
 
     Edge c;
     c.v = 1;
     c.w = 3;
     printf("Inserting edge, '%d - %d` into Graph.\n", c.v, c.w);    
-    GraphInsertEdge(graph, c);
+    result = GraphInsertEdge(graph, c);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert Edge into Graph. Exiting.\n");
+        GraphFree(graph);
+        return 1;
+    }
 
     Edge d;
     d.v = 2;
     d.w = 3;
     printf("Inserting edge, '%d - %d` into Graph.\n", d.v, d.w);    
-    GraphInsertEdge(graph, d);
+    result = GraphInsertEdge(graph, d);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert Edge into Graph. Exiting.\n");
+        GraphFree(graph);
+        return 1;
+    }
 
     Edge e;
     e.v = 1;
     e.w = 2;
     printf("Inserting edge, '%d - %d` into Graph.\n", e.v, e.w);    
-    GraphInsertEdge(graph, e);
+    result = GraphInsertEdge(graph, e);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to insert Edge into Graph. Exiting.\n");
+        GraphFree(graph);
+        return 1;
+    }
 
     printf("\n-- GraphGetEdge() --\n"); 
 
@@ -70,18 +107,31 @@ int main(void){
     Edge *edge = GraphGetEdge(graph, eV, eW);
     if(edge == NULL){
         printf("GraphGetEdge failed. Returned NULL.\n");
+        GraphFree(graph);
         return 1;
     }
+
     printf("Edge successfully returned: '%p'\n", edge);
 
     printf("\n-- GraphRemoveEdge() --\n");
 
     printf("Removing edge, '%d - %d' from Graph.\n", eV, eW);
-    GraphRemoveEdge(graph,edge);
+    result = GraphRemoveEdge(graph,edge);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to remove Edge from Graph. Exiting.\n");
+        GraphFree(graph);
+        return 1;
+    }
 
     printf("\n-- GraphFree() --\n");
     printf("Freeing Graph.\n");
-    GraphFree(graph);
+    result = GraphFree(graph);
+    if(result != STD_DDS_SUCCESS){
+        PrintResultCode(result);
+        printf("Failed to free Graph. Exiting.\n");
+        return 1;
+    }
 
     return 0;
 }

@@ -71,7 +71,7 @@ Graph *GraphInit(const size_t vLength){
         return NULL;
     }
 
-    if(ArrayListFill(graph->edges, NULL) != 0){
+    if(ArrayListFill(graph->edges, NULL) != STD_DDS_SUCCESS){
         return NULL;
     }
 

@@ -19,6 +19,7 @@
 #define STD_DDS_H
 
 #include "std_dds_core.h"
+#include "std_dds_utils.h"
 
 #include "array_list.h"
 #include "linked_list.h"
